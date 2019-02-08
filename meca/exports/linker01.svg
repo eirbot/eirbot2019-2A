@@ -100,19 +100,19 @@
    stroke-width="0.350000"
    transform="scale(1,-1)"
   >
-<path id= "1" d=" M 51 2 L 51 8 " />
-<path id= "2" d=" M 51 8 L 55 8 " />
-<path d="M57 10 A2 2 0 0 0 55 8" /><path id= "4" d=" M 57 10 L 57 14 " />
-<path d="M55 16 A2 2 0 0 0 57 14" /><path id= "6" d=" M 55 16 L 51 16 " />
-<path id= "7" d=" M 51 16 L 51 22 " />
-<path d="M49 24 A2 2 0 0 0 51 22" /><path id= "9" d=" M 49 24 L 8 24 " />
+<path id= "1" d=" M 36 2 L 36 8 " />
+<path id= "2" d=" M 36 8 L 40 8 " />
+<path d="M42 10 A2 2 0 0 0 40 8" /><path id= "4" d=" M 42 10 L 42 14 " />
+<path d="M40 16 A2 2 0 0 0 42 14" /><path id= "6" d=" M 40 16 L 36 16 " />
+<path id= "7" d=" M 36 16 L 36 22 " />
+<path d="M34 24 A2 2 0 0 0 36 22" /><path id= "9" d=" M 34 24 L 8 24 " />
 <path d="M6 22 A2 2 0 0 0 8 24" /><path id= "11" d=" M 6 22 L 6 16 " />
 <path id= "12" d=" M 6 16 L 2 16 " />
 <path d="M0 14 A2 2 0 0 0 2 16" /><path id= "14" d=" M 0 14 L 0 10 " />
 <path d="M2 8 A2 2 0 0 0 0 10" /><path id= "16" d=" M 2 8 L 6 8 " />
 <path id= "17" d=" M 6 8 L 6 2 " />
-<path d="M8 0 A2 2 0 0 0 6 2" /><path id= "19" d=" M 8 -1.29606e-26 L 49 -1.29606e-26 " />
-<path d="M51 2 A2 2 0 0 0 49 0" /></g>
+<path d="M8 0 A2 2 0 0 0 6 2" /><path id= "19" d=" M 8 0 L 34 0 " />
+<path d="M36 2 A2 2 0 0 0 34 0" /></g>
 </g>
 
 
