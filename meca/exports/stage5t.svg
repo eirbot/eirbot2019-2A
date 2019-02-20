@@ -90,8 +90,8 @@
 			</g>
 		</g>
 	</g>
-<g id="linker01_view"
-   transform="rotate(90,212,212) translate(212,212) scale(1,1)"
+<g id="Ortho_0_0"
+   transform="rotate(0,212,212) translate(212,212) scale(1,1)"
   >
 <g   fill="none"
    stroke="rgb(0, 0, 0)"
@@ -100,19 +100,11 @@
    stroke-width="0.350000"
    transform="scale(1,-1)"
   >
-<path id= "1" d=" M 36.5 2 L 36.5 8 " />
-<path id= "2" d=" M 36.5 8 L 40.5 8 " />
-<path d="M42.5 10 A2 2 0 0 0 40.5 8" /><path id= "4" d=" M 42.5 10 L 42.5 14 " />
-<path d="M40.5 16 A2 2 0 0 0 42.5 14" /><path id= "6" d=" M 40.5 16 L 36.5 16 " />
-<path id= "7" d=" M 36.5 16 L 36.5 22 " />
-<path d="M34.5 24 A2 2 0 0 0 36.5 22" /><path id= "9" d=" M 34.5 24 L 8 24 " />
-<path d="M6 22 A2 2 0 0 0 8 24" /><path id= "11" d=" M 6 22 L 6 16 " />
-<path id= "12" d=" M 6 16 L 2 16 " />
-<path d="M0 14 A2 2 0 0 0 2 16" /><path id= "14" d=" M 0 14 L 0 10 " />
-<path d="M2 8 A2 2 0 0 0 0 10" /><path id= "16" d=" M 2 8 L 6 8 " />
-<path id= "17" d=" M 6 8 L 6 2 " />
-<path d="M8 0 A2 2 0 0 0 6 2" /><path id= "19" d=" M 8 8.42056e-29 L 34.5 8.42056e-29 " />
-<path d="M36.5 2 A2 2 0 0 0 34.5 0" /></g>
+<path id= "1" d=" M -50 -45 L -50 45 " />
+<path d="M-50 -45 A5 5 0 0 1 -45 -50" /><path d="M-45 50 A5 5 0 0 1 -50 45" /><path id= "4" d=" M 45 -50 L -45 -50 " />
+<path id= "5" d=" M -45 50 L 45 50 " />
+<path d="M45 -50 A5 5 0 0 1 50 -45" /><path d="M50 45 A5 5 0 0 1 45 50" /><path id= "8" d=" M 50 45 L 50 -45 " />
+<circle cx ="35" cy ="-35" r ="6" /><circle cx ="35" cy ="35" r ="6" /><circle cx ="0" cy ="0" r ="6" /><circle cx ="-35" cy ="35" r ="6" /><circle cx ="-35" cy ="-35" r ="6" /></g>
 </g>
 
 
