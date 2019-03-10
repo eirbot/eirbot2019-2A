@@ -1,14 +1,16 @@
 #include "qei.hpp"
+
 #ifdef DEBUG
 #include <debug.hpp>
 #endif
+
 
 Qei::Qei(TIM_TypeDef* _TIMx)
 {
 	Qei(_TIMx, NULL);
 }
 
-Qei::Qei(TIM_TypeDef* _TIMx, int* err)
+Qei::Qei(TIM_TypeDef* _TIMx, int* _err)
 {
 	TIMx = _TIMx;
 	TIM_Encoder_InitTypeDef encoder;
@@ -18,9 +20,12 @@ Qei::Qei(TIM_TypeDef* _TIMx, int* err)
 		__HAL_RCC_TIM3_CLK_ENABLE();
 	} else if (TIMx == TIM4) {
 		__HAL_RCC_TIM4_CLK_ENABLE();
-	} else {
-		*err = ERR_ENCODER_START;
 	}
+#ifdef DEBUG
+	else {
+		*_err = ERR_ENCODER_START;
+	}
+#endif
 	htim.Instance = TIMx;
 	htim.Init.Period = MAXCOUNT_PERIOD;
 	htim.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -35,15 +40,19 @@ Qei::Qei(TIM_TypeDef* _TIMx, int* err)
 	encoder.IC2Polarity = TIM_ICPOLARITY_RISING;
 	encoder.IC2Prescaler = TIM_ICPSC_DIV1;
 	encoder.IC2Selection = TIM_ICSELECTION_DIRECTTI;
+#ifdef DEBUG
 	if (HAL_TIM_Encoder_Init(&htim, &encoder) != HAL_OK) {
-		*err = ERR_ENCODER_START;
+		*_err = ERR_ENCODER_START;
 	}
+#endif
 	master_config.MasterOutputTrigger = TIM_TRGO_RESET;
 	master_config.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+#ifdef DEBUG
 	if (HAL_TIMEx_MasterConfigSynchronization(&htim, &master_config)
 			!= HAL_OK) {
-		*err = ERR_ENCODER_MASTERCONFIG;
+		*_err = ERR_ENCODER_MASTERCONFIG;
 	}
+#endif
 	GPIO_InitTypeDef GPIO_InitStruct;
 	if (TIMx == TIM3) {
 		__HAL_RCC_GPIOA_CLK_ENABLE();
@@ -61,12 +70,17 @@ Qei::Qei(TIM_TypeDef* _TIMx, int* err)
 		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 		GPIO_InitStruct.Alternate = GPIO_AF2_TIM4;
 		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-	} else {
-		*err = ERR_ENCODER_START;
 	}
+#ifdef DEBUG
+	else {
+		*_err = ERR_ENCODER_START;
+	}
+#endif
+#ifdef DEBUG
 	if (HAL_TIM_Encoder_Start(&htim, TIM_CHANNEL_ALL) != HAL_OK) {
-		*err = ERR_ENCODER_START;
+		*_err = ERR_ENCODER_START;
 	}
+#endif
 	TIMx->CNT = 0;
 }
 
@@ -75,12 +89,20 @@ Qei::~Qei()
 
 }
 
-void Qei::Reset()
+void Qei::reset()
 {
 	TIMx->CNT = 0;
 }
 
-short Qei::GetQei()
+short Qei::getQei()
 {
 	return TIMx->CNT;
+}
+
+short Qei::getQei(short* _val)
+{
+	short new_val = getQei();
+	short dr = new_val - *_val;
+	*_val = new_val;
+	return dr;
 }
