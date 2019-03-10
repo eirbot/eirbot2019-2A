@@ -37,7 +37,7 @@ int main()
 	ser.printf("error code: %d\r\n", err);
 	ser.getc();
 #ifdef TRANSFER
-	impulse(&ser, &motor_l, &motor_r, &qei_l, &qei_r);
+	transfer(&ser, &motor_l, &motor_r, &qei_l, &qei_r);
 #endif
 #endif
 	motor_l.setPwm(0.0f);

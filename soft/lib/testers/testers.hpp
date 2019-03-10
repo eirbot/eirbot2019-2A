@@ -14,7 +14,7 @@
 #define PWM2 0.5f
 
 
-void impulse(Serial* ser, LMD18200* motor_l, LMD18200* motor_r,
+void transfer(Serial* ser, LMD18200* motor_l, LMD18200* motor_r,
 		Qei* qei_l, Qei* qei_r);
 
 
