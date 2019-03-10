@@ -1,4 +1,3 @@
-
 #ifndef LMD18200_HPP
 #define LMD18200_HPP
 
@@ -18,14 +17,12 @@ public:
 	LMD18200(PinName _pwm, PinName _dir, PinName _br, bool _dir_fwd,
 			float _period);
 	~LMD18200();
-	void Reset();
-	void Pause();
-	float GetPwm();
-	bool GetDir();
-	bool GetBreak();
-	void SetPwm(float _pwm);
-	void SetDirection(bool _dir);
-	void SetBreak(bool _br);
+	float getPwm();
+	bool getDir();
+	bool getBreak();
+	void setPwm(float _pwm);
+	void setDirection(bool _dir);
+	void setBreak(bool _br);
 private:
 	bool dir_fwd;
 	PwmOut pwm;

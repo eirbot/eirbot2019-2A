@@ -3,6 +3,7 @@
 
 #include <mbed.h>
 
+
 // Encoder parameters
 #define MAXCOUNT_PERIOD 0xFFFF
 #define ENCODER_MODE TIM_ENCODERMODE_TI12
@@ -19,5 +20,6 @@ public:
 private:
 	TIM_TypeDef* TIMx;
 };
+
 
 #endif

@@ -40,6 +40,6 @@ int main()
 	impulse(&ser, &motor_l, &motor_r, &qei_l, &qei_r);
 #endif
 #endif
-	motor_l.SetPwm(0.0f);
-	motor_r.SetPwm(0.0f);
+	motor_l.setPwm(0.0f);
+	motor_r.setPwm(0.0f);
 }

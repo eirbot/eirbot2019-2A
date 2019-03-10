@@ -1,3 +1,9 @@
+/*
+ * TODO
+ * -
+ */
+
+
 #include "testers.hpp"
 
 
@@ -16,22 +22,22 @@ void impulse(Serial* ser, LMD18200* motor_l, LMD18200* motor_r,
 	ser->printf("starting impulse response...\n\r");
 	ser->getc();
 	t_timer.start();
-	motor_l->SetPwm(PWM1);
-	motor_r->SetPwm(PWM1);
+	motor_l->setPwm(PWM1);
+	motor_r->setPwm(PWM1);
 	while (t < T1 && !ser->readable()) {
 		t = t_timer.read();
 		dl = qei_l->getQei(&val_l);
 		dr = qei_r->getQei(&val_r);
 		ser->printf("%f\t%f\t%f", t, dl, dr);
 	}
-	motor_l->SetPwm(PWM2);
-	motor_r->SetPwm(PWM2);
+	motor_l->setPwm(PWM2);
+	motor_r->setPwm(PWM2);
 	while (t < T2 && !ser->readable()) {
 		t = t_timer.read();
 		dl = qei_l->getQei(&val_l);
 		dr = qei_r->getQei(&val_r);
 		ser->printf("%f\t%f\t%f", t, dl, dr);
 	}
-	motor_l->SetPwm(0.0f);
-	motor_r->SetPwm(0.0f);
+	motor_l->setPwm(0.0f);
+	motor_r->setPwm(0.0f);
 }
