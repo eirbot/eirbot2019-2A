@@ -5,9 +5,7 @@
 
 #ifdef DEBUG
 #include <debug.hpp>
-#ifdef TRANSFER
 #include <testers.hpp>
-#endif
 #endif
 
 
@@ -36,6 +34,12 @@ int main()
 	ser.printf("\r\nstart\r\n");
 	ser.printf("error code: %d\r\n", err);
 	ser.getc();
+#ifdef LENGTH_CALIB
+	length_calibration(&ser, &qei_l, &qei_r);
+#endif
+#ifdef ANGLE_CALIB
+	angle_calibration(&ser, &qei_l, &qei_r);
+#endif
 #ifdef TRANSFER
 	transfer(&ser, &motor_l, &motor_r, &qei_l, &qei_r);
 #endif

@@ -7,6 +7,46 @@
 #include "testers.hpp"
 
 
+void length_calibration(Serial* ser, Qei* qei_l, Qei* qei_r)
+{
+	short val_l = qei_l->getQei();
+	short val_r = qei_r->getQei();
+	float dl = 0.0f;
+	float dr = 0.0f;
+	float length = 0.0f;
+	ser->printf("length measurement parameters:\n\r");
+	ser->printf("L: %fm\n\r", LENGTH_TEST);
+	ser->printf("pattern:\tdl+dr/2\tlength\n\r");
+	ser->printf("starting length measurement...\n\r");
+	ser->getc();
+	while (!ser->readable()) {
+		dl = qei_l->getQei(&val_l);
+		dr = qei_r->getQei(&val_r);
+		length += (dl+dr)/2;
+		ser->printf("%f\t%f\n\r",  dl+dr/2, length);
+	}
+}
+
+void angle_calibration(Serial* ser, Qei* qei_l, Qei* qei_r)
+{
+	short val_l = qei_l->getQei();
+	short val_r = qei_r->getQei();
+	float dl = 0.0f;
+	float dr = 0.0f;
+	float angle = 0.0f;
+	ser->printf("angle measurement parameters:\n\r");
+	ser->printf("A: %fPI rad\n\r", ANGLE_TEST);
+	ser->printf("pattern:\tdl+dr/2\tangle\n\r");
+	ser->printf("starting angle measurement...\n\r");
+	ser->getc();
+	while (!ser->readable()) {
+		dl = qei_l->getQei(&val_l);
+		dr = qei_r->getQei(&val_r);
+		angle += (dl-dr)/2;
+		ser->printf("%f\t%f\n\r",  dl-dr/2, angle);
+	}
+}
+
 void transfer(Serial* ser, LMD18200* motor_l, LMD18200* motor_r,
 		Qei* qei_l, Qei* qei_r)
 {
@@ -28,7 +68,7 @@ void transfer(Serial* ser, LMD18200* motor_l, LMD18200* motor_r,
 		t = t_timer.read();
 		dl = qei_l->getQei(&val_l);
 		dr = qei_r->getQei(&val_r);
-		ser->printf("%f\t%f\t%f", t, dl, dr);
+		ser->printf("%f\t%f\t%f\n\r", t, dl, dr);
 	}
 	motor_l->setPwm(PWM2);
 	motor_r->setPwm(PWM2);
@@ -36,7 +76,7 @@ void transfer(Serial* ser, LMD18200* motor_l, LMD18200* motor_r,
 		t = t_timer.read();
 		dl = qei_l->getQei(&val_l);
 		dr = qei_r->getQei(&val_r);
-		ser->printf("%f\t%f\t%f", t, dl, dr);
+		ser->printf("%f\t%f\t%f\n\r", t, dl, dr);
 	}
 	motor_l->setPwm(0.0f);
 	motor_r->setPwm(0.0f);
