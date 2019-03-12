@@ -15,8 +15,9 @@ Serial ser(USBTX, USBRX);
 Qei qei_l(ENCODER_TIM_LEFT, &err);
 Qei qei_r(ENCODER_TIM_RIGHT, &err);
 #else
-Qei qei_l(ENCODER_TIM_LEFT);
-Qei qei_r(ENCODER_TIM_RIGHT);
+int err = 0;
+Qei qei_l(ENCODER_TIM_LEFT, &err);
+Qei qei_r(ENCODER_TIM_RIGHT, &err);
 #endif
 
 DigitalOut led = LED2;

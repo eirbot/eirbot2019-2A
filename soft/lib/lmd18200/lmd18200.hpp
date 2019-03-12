@@ -14,17 +14,17 @@
 class LMD18200
 {
 public:
-	LMD18200(PinName _pwm, PinName _dir, PinName _br, bool _dir_fwd,
-			float _period);
+	LMD18200(PinName const _pwm, PinName const _dir, PinName const _br,
+			bool const _dir_fwd, float const _period);
 	~LMD18200();
 	float getPwm();
 	bool getDir();
 	bool getBreak();
-	void setPwm(float _pwm);
-	void setDirection(bool _dir);
-	void setBreak(bool _br);
+	void setPwm(float const _pwm);
+	void setDirection(bool const _dir);
+	void setBreak(bool const _br);
 private:
-	bool dir_fwd;
+	bool const dir_fwd;
 	PwmOut pwm;
 	DigitalOut dir;
 	DigitalOut br;

@@ -7,7 +7,7 @@
 #include "testers.hpp"
 
 
-void length_calibration(Serial* ser, Qei* qei_l, Qei* qei_r)
+void length_calibration(Serial* const ser, Qei* const qei_l, Qei* const qei_r)
 {
 	short val_l = qei_l->getQei();
 	short val_r = qei_r->getQei();
@@ -27,7 +27,7 @@ void length_calibration(Serial* ser, Qei* qei_l, Qei* qei_r)
 	}
 }
 
-void angle_calibration(Serial* ser, Qei* qei_l, Qei* qei_r)
+void angle_calibration(Serial* const ser, Qei* const qei_l, Qei* const qei_r)
 {
 	short val_l = qei_l->getQei();
 	short val_r = qei_r->getQei();
@@ -47,8 +47,8 @@ void angle_calibration(Serial* ser, Qei* qei_l, Qei* qei_r)
 	}
 }
 
-void transfer(Serial* ser, LMD18200* motor_l, LMD18200* motor_r,
-		Qei* qei_l, Qei* qei_r)
+void transfer(Serial* const ser, LMD18200* const motor_l,
+		LMD18200* const motor_r, Qei* const qei_l, Qei* const qei_r)
 {
 	float t = 0.0f;
 	short val_l = qei_l->getQei();

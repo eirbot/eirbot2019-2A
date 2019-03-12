@@ -11,14 +11,13 @@
 class Qei
 {
 public:
-	Qei(TIM_TypeDef* _TIMx);
-	Qei(TIM_TypeDef* _TIMx, int* _err);
+	Qei(TIM_TypeDef* const _TIMx, int* const _err);
 	~Qei();
 	void reset();
 	short getQei();
-	short getQei(short* _val);
+	short getQei(short* const _val);
 private:
-	TIM_TypeDef* TIMx;
+	TIM_TypeDef* const TIMx;
 };
 
 

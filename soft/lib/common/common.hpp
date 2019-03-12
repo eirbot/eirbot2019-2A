@@ -4,11 +4,11 @@
 #include "mbed.h"
 
 
-float sg(float val);
-float max(float val_1, float val_2);
-float min(float val_1, float val_2);
-float min(float val_1, float val_2, float val_3);
-void blink(DigitalOut* led);
+float sg(float const val);
+float max(float const val_1, float const val_2);
+float min(float const val_1, float const val_2);
+float min(float const val_1, float const val_2, float const val_3);
+void blink(DigitalOut* const led);
 
 
 #endif
