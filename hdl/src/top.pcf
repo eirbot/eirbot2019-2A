@@ -1,0 +1,10 @@
+# CLK
+set_io clk_o 38
+
+# RGB LED
+set_io ledG 39
+set_io ledB 40
+set_io ledR 41
+
+# PWM
+set_io pwm_o 28
