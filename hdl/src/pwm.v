@@ -1,8 +1,13 @@
+/*
+ * TODO
+ * Documentation
+ */
+
 `timescale 1ns/1ps
 
 module pwm #(
-	parameter nbits = 8,
-	parameter max = 2^nbits-1
+	parameter freq = 48000000/(2**11),
+	parameter nbits = 10
 )(
 	input clk,
 	input rst,
@@ -11,32 +16,64 @@ module pwm #(
 	output reg out
 );
 
-wire [nbits-1:0] val;
+localparam nbits_pwm = nbits;
+localparam max_pwm = 2**nbits_pwm-1;
+localparam max_clk_divider = $rtoi($floor(48000000/(freq*(2**nbits_pwm)))-1);
+localparam nbits_clk_divider = $clog2(max_clk_divider+1);
 
-counter #(
-	.nbits(nbits),
-	.min(0),
-	.max(max),
-	.step(1)
-) counter (
-	.clk(clk),
-	.rst(rst),
-	.clr(1'b0),
-	.en(en),
-	.count(val),
-	.overflow()
-);
+wire counter_en;
+wire [nbits_pwm-1:0] count;
 
-always @(posedge clk)
-begin
-	if (rst)
+generate
+	if (max_clk_divider >= 0)
 	begin
-		out = 0;
+		counter #(
+			.nbits(nbits_clk_divider),
+			.min(0),
+			.max(max_clk_divider),
+			.step(1)
+		) clk_divider (
+			.clk(clk),
+			.rst(rst),
+			.clr(1'b0),
+			.en(en),
+			.count(),
+			.overflow(counter_en)
+		);
+
+		counter #(
+			.nbits(nbits_pwm),
+			.min(0),
+			.max(max_pwm),
+			.step(1)
+		) counter_pwm (
+			.clk(clk),
+			.rst(rst),
+			.clr(1'b0),
+			.en(counter_en),
+			.count(count),
+			.overflow()
+		);
+
+		always @(posedge clk)
+		begin
+			if (rst || !en) begin
+				out <= 0;
+			end else begin
+				out <= (count<in) ? 1'b1 : 1'b0;
+			end
+		end
+
 	end
 	else
 	begin
-		out <= en && val<in ? 1'b1 : 1'b0;
+		initial
+		begin
+			$display("Bad parameters in PWM :");
+			$display("Cannot reach this precision at this frequency");
+			$finish(1);
+		end
 	end
-end
+endgenerate
 
 endmodule
