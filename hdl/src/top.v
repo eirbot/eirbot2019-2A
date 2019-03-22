@@ -1,6 +1,10 @@
 /*
  * Top module
+ * TODO
+ * Documentation
  */
+
+`include "config.vh"
 
 module top(
 	// LED outputs
@@ -16,9 +20,9 @@ wire clk;
 reg rst = 1'b0;
 assign clk_o = clk;
 // RGB signals
-wire [23:0] demo_rgb;
+wire [3*`LED_NBPC-1:0] demo_rgb;
 
-// Internal oscillator to genereate clock
+// Internal oscillator to generate clock
 SB_HFOSC inthosc (
 	.CLKHFPU(1'b1),
 	.CLKHFEN(1'b1),
@@ -26,9 +30,8 @@ SB_HFOSC inthosc (
 );
 
 // RGB LED
-
 rgb #(
-	.nbpc(8)
+	.nbpc(`LED_NBPC)
 ) rgb (
 	.clk(clk),
 	.rst(rst),
@@ -49,12 +52,13 @@ rgb_demo #(
 
 // PWM
 pwm #(
-	.nbits(16)
+	.freq(`PWM_FREQ),
+	.nbits(`PWM_RES)
 ) pwm (
 	.clk(clk),
 	.rst(rst),
 	.en(1'b1),
-	.in(2**15),
+	.in(10'd2**14),
 	.out(pwm_o)
 );
 
