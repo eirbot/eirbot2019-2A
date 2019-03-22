@@ -10,7 +10,7 @@ wire phase_next;
 
 counter #(
 	.nbits(26),
-	.max(48000000),
+	.max(48000000)
 ) counter (
 	.clk(clk),
 	.rst(rst),
