@@ -4,7 +4,7 @@
 
 module rgb #(
 	parameter nbpc = 8,
-	parameter max = 2^nbpc-1
+	parameter max = 2**nbpc-1
 )(
 	input clk,
 	input rst,
