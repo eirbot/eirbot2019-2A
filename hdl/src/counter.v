@@ -3,7 +3,7 @@
 module counter #(
 	parameter nbits = 8,
 	parameter min = 0,
-	parameter max = 2^nbits-1,
+	parameter max = 2**nbits-1,
 	parameter signed step = 1
 )(
 	input clk,
@@ -14,41 +14,72 @@ module counter #(
 	output reg overflow
 );
 
-always @(posedge clk)
-begin
-	if (rst || clr)
+generate
+	if (step > 0)
 	begin
-		count = 0;
-	end
-	else if (en)
-	begin
-		if (step >= 0)
+		always @(posedge clk)
 		begin
-			if (count + step > max)
+			if (rst || clr)
 			begin
-				count = min;
-				overflow = 1;
+				count <= 0;
+			end
+			else if (en)
+			begin
+				if (count + step > max)
+				begin
+					count <= min;
+					overflow <= 1;
+				end
+				else
+				begin
+					count <= count + step;
+					overflow <= 0;
+				end
 			end
 			else
 			begin
-				count = count + step;
-				overflow = 0;
-			end
-		end
-		else
-		begin
-			if (count + step < min)
-			begin
-				count = max;
-				overflow = 1;
-			end
-			else
-			begin
-				count = count + step;
-				overflow = 0;
+				count <= count;
+				overflow <= overflow;
 			end
 		end
 	end
-end
+	else if (step < 0)
+	begin
+		always @(posedge clk)
+		begin
+			if (rst || clr)
+			begin
+				count <= 0;
+			end
+			else if (en)
+			begin
+				if (count + step < min)
+				begin
+					count <= max;
+					overflow <= 1;
+				end
+				else
+				begin
+					count <= count + step;
+					overflow <= 0;
+				end
+			end
+			else
+			begin
+				count <= count;
+				overflow <= overflow;
+			end
+		end
+	end
+	else
+	begin
+		initial
+		begin
+			$display("counter: invalid parameters");
+			$display("Null step");
+			$finish(1);
+		end
+	end
+endgenerate
 
 endmodule
