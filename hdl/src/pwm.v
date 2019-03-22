@@ -69,8 +69,8 @@ generate
 	begin
 		initial
 		begin
-			$display("Bad parameters in PWM :");
-			$display("Cannot reach this precision at this frequency");
+			$display("pwm: Invalid parameters");
+			$display("frequency too high for precision");
 			$finish(1);
 		end
 	end
