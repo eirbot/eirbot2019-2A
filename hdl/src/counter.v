@@ -21,7 +21,7 @@ module counter #(
 );
 
 generate
-	if (step > 0)
+	if (step > 0 && max-min < 2**nbits)
 	begin
 		always @(posedge clk)
 		begin
@@ -49,7 +49,7 @@ generate
 			end
 		end
 	end
-	else if (step < 0)
+	else if (step < 0 && max-min < 2**nbits)
 	begin
 		always @(posedge clk)
 		begin
@@ -77,12 +77,21 @@ generate
 			end
 		end
 	end
-	else
+	else if (step == 0)
 	begin
 		initial
 		begin
 			$display("counter: invalid parameters");
 			$display("Null step");
+			$finish(1);
+		end
+	end
+	else
+	begin
+		initial
+		begin
+			$display("counter: invalid parameters");
+			$display("Out of range");
 			$finish(1);
 		end
 	end

@@ -7,8 +7,8 @@
 `include "config.vh"
 
 module pwm #(
-	parameter freq = 1000,
-	parameter nbits = 10
+	parameter freq = `PWM_FREQ,
+	parameter nbits = `PWM_RES
 )(
 	input clk,
 	input rst,

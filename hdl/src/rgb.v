@@ -4,12 +4,10 @@
  * Documentation
  */
 
- */
-
 `include "config.vh"
 
 module rgb #(
-	parameter nbpc = 8,
+	parameter nbpc = `LED_NBPC,
 	parameter max = 2**nbpc-1
 )(
 	input clk,
