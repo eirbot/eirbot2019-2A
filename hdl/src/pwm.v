@@ -1,12 +1,13 @@
 /*
+ * PWM generator module
  * TODO
  * Documentation
  */
 
-`timescale 1ns/1ps
+`include "config.vh"
 
 module pwm #(
-	parameter freq = 48000000/(2**11),
+	parameter freq = 1000,
 	parameter nbits = 10
 )(
 	input clk,

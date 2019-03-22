@@ -1,4 +1,10 @@
-`timescale 1ns/1ps
+/*
+ * Counter module
+ * TODO
+ * Documentation
+ */
+
+`include "config.vh"
 
 module counter #(
 	parameter nbits = 8,

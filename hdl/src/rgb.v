@@ -1,6 +1,12 @@
 /*
  * RGB led module
+ * TODO
+ * Documentation
  */
+
+ */
+
+`include "config.vh"
 
 module rgb #(
 	parameter nbpc = 8,
