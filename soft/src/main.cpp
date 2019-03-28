@@ -42,7 +42,7 @@ int main()
 	angle_calibration(&ser, &qei_l, &qei_r);
 #endif
 #ifdef TRANSFER
-	transfer(&ser, &motor_l, &motor_r, &qei_l, &qei_r);
+	transfer2(&ser, &motor_l, &motor_r, &qei_l, &qei_r);
 #endif
 #endif
 	motor_l.setPwm(0.0f);

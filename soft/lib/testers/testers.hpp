@@ -18,6 +18,8 @@ void angle_calibration(Serial* const ser, Qei* const qei_l, Qei* const qei_r);
 #define PWM2 0.5f
 void transfer(Serial* const ser, LMD18200* const motor_l,
 		LMD18200* const motor_r, Qei* const qei_l, Qei* const qei_r);
+void transfer2(Serial* const ser, LMD18200* const motor_l,
+		LMD18200* const motor_r, Qei* const qei_l, Qei* const qei_r);
 
 
 #endif
