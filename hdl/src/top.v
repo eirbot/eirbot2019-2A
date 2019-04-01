@@ -7,20 +7,24 @@
 `include "config.vh"
 
 module top(
+	// Global inputs
+	input rst,
+	// QEI inputs
+	input qeiL_A,
+	input qeiL_B,
 	// LED outputs
 	output ledR,
 	output ledG,
 	output ledB,
+	// Motor outputs
 	output pwm_o,
-	output clk_o
 );
 
 // Global signals
 wire clk;
-reg rst = 1'b0;
-assign clk_o = clk;
-// RGB signals
-wire [3*`LED_NBPC-1:0] demo_rgb;
+
+//assign led_o = leds;
+wire [15:0] qei_val;
 
 // Internal oscillator to generate clock
 SB_HFOSC inthosc (
@@ -36,18 +40,10 @@ rgb #(
 	.clk(clk),
 	.rst(rst),
 	.en(1'b1),
-	.in(demo_rgb),
+	.in(24'h0f0f0f),
 	.ledR(ledR),
 	.ledG(ledG),
 	.ledB(ledB)
-);
-
-rgb_demo #(
-) rgb_demo (
-	.clk(clk),
-	.rst(rst),
-	.en(1'b1),
-	.out(demo_rgb)
 );
 
 // PWM
@@ -58,8 +54,21 @@ pwm #(
 	.clk(clk),
 	.rst(rst),
 	.en(1'b1),
-	.in(10'd2**14),
+	.in(10'd2**9),
 	.out(pwm_o)
+);
+
+// QEI
+qei #(
+	.nbits(16)
+) qei (
+	.clk(clk),
+	.rst(rst),
+	.clr(1'b0),
+	.en(1'b1),
+	.in_A(qeiL_A),
+	.in_B(qeiL_B),
+	.val(qei_val)
 );
 
 endmodule
