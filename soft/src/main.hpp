@@ -16,7 +16,6 @@
 
 // Motors
 #define PERIOD_PWM 0.000033f
-
 // Left motor
 #define PWM_L PB_3
 #define DIR_L PA_8
@@ -27,6 +26,10 @@
 #define DIR_R PA_9
 #define BREAK_R PB_5
 #define DIR_FWD_R 1
+
+// PID
+#define NB_COEF_ERR 4
+#define NB_COEF_SP 4
 
 
 #endif
