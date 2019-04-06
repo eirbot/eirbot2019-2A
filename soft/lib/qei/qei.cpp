@@ -5,7 +5,7 @@
 #endif
 
 
-Qei::Qei(TIM_TypeDef* _TIMx, int* const _err):
+Qei::Qei(TIM_TypeDef* const _TIMx, int* const _err):
 	TIMx(_TIMx)
 {
 	TIM_Encoder_InitTypeDef encoder;

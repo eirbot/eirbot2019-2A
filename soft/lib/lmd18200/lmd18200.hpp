@@ -9,6 +9,7 @@
 #define DIR_BACKWARD 1
 #define BREAK_OFF 0
 #define BREAK_ON 1
+#define MAX_DUTY 0.80f
 
 
 class LMD18200

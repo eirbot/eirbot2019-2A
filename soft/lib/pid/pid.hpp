@@ -24,18 +24,18 @@ private:
 class Pid
 {
 public:
-	Pid(float* _coef_err, int _len_err, float* _coef_sp, int _len_sp);
+	Pid(float* _coef_err, int _len_err, float* _coef_co, int _len_co);
 	~Pid();
 	void reset();
 	float getPid();
-	float getPid(float err, float sp);
+	float getPid(float _err, float _co);
 private:
 	float* coef_err;
 	int len_err;
-	float* coef_sp;
-	int len_sp;
+	float* coef_co;
+	int len_co;
 	CArray err_ca;
-	CArray sp_ca;
+	CArray co_ca;
 };
 
 

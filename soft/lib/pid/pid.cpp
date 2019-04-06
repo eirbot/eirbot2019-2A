@@ -29,7 +29,7 @@ void CArray::reset()
 
 void CArray::add(float val)
 {
-	index = (index - length -1) % length;
+	index = ((index-1) % length + length) % length;
 	array[index] = val;
 }
 
@@ -39,14 +39,14 @@ float CArray::operator[](int _index)
 }
 
 
-Pid::Pid(float* _coef_err, int _len_err, float* _coef_sp, int _len_sp):
+Pid::Pid(float* _coef_err, int _len_err, float* _coef_co, int _len_co):
 	err_ca(_len_err),
-	sp_ca(_len_sp)
+	co_ca(_len_co)
 {
 	len_err = _len_err;
-	len_sp = _len_sp;
+	len_co = _len_co;
 	coef_err = _coef_err;
-	coef_sp = _coef_sp;
+	coef_co = _coef_co;
 }
 
 Pid::~Pid()
@@ -57,24 +57,29 @@ Pid::~Pid()
 void Pid::reset()
 {
 	err_ca.reset();
-	sp_ca.reset();
+	co_ca.reset();
 }
 
 float Pid::getPid()
 {
 	float sum = 0.0f;
+	float sum1 = 0.0f;
+	float sum2 = 0.0f;
 	for (int i = 0; i < len_err; i++) {
 		sum += coef_err[i] * err_ca[i];
+		sum1 += coef_err[i] * err_ca[i];
 	}
-	for (int i = 0; i < len_sp; i++) {
-		sum += coef_sp[i] * sp_ca[i];
+	for (int i = 0; i < len_co; i++) {
+		sum -= coef_co[i] * co_ca[i];
+		sum2 -= coef_co[i] * co_ca[i];
 	}
+	printf("co_err:%f\tco_co:%f\r\n", sum1, sum2);
 	return sum;
 }
 
-float Pid::getPid(float err, float sp)
+float Pid::getPid(float _err, float _co)
 {
-	err_ca.add(err);
-	sp_ca.add(sp);
+	err_ca.add(_err);
+	co_ca.add(_co);
 	return getPid();
 }

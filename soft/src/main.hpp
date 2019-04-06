@@ -29,7 +29,7 @@
 
 // PID
 #define NB_COEF_ERR 4
-#define NB_COEF_SP 4
+#define NB_COEF_CO 3
 
 
 #endif

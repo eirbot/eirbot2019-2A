@@ -57,14 +57,15 @@ void transfer(Serial* const ser, LMD18200* const motor_l,
 	float dr = 0.0f;
 	Timer t_timer;
 	ser->printf("impulse response parameters:\n\r");
-	ser->printf("t1: %fs, pwm1: %f, t2:%fs, pwm2: %f\n\r", T1, PWM1, T2, PWM2);
+	ser->printf("t1: %fs, pwm1: %f, t2:%fs, pwm2: %f\n\r",
+			T1_transfer, PWM1, T2_transfer, PWM2);
 	ser->printf("pattern:\n\rt\tdl\tdr\n\r");
 	ser->printf("starting impulse response...\n\r");
 	ser->getc();
 	t_timer.start();
 	motor_l->setPwm(PWM1);
 	motor_r->setPwm(PWM1);
-	while (t < T1 && !ser->readable()) {
+	while (t < T1_transfer && !ser->readable()) {
 		t = t_timer.read();
 		dl = qei_l->getQei(&val_l);
 		dr = qei_r->getQei(&val_r);
@@ -72,7 +73,7 @@ void transfer(Serial* const ser, LMD18200* const motor_l,
 	}
 	motor_l->setPwm(PWM2);
 	motor_r->setPwm(PWM2);
-	while (t < T2 && !ser->readable()) {
+	while (t < T2_transfer && !ser->readable()) {
 		t = t_timer.read();
 		dl = qei_l->getQei(&val_l);
 		dr = qei_r->getQei(&val_r);
@@ -90,18 +91,19 @@ void transfer2(Serial* const ser, LMD18200* const motor_l,
 	float dl = 0.0f;
 	Timer t_timer;
 	ser->printf("impulse response parameters:\n\r");
-	ser->printf("t1: %fs, pwm1: %f, t2:%fs, pwm2: %f\n\r", T1, PWM1, T2, PWM2);
+	ser->printf("t1: %fs, pwm1: %f, t2:%fs, pwm2: %f\n\r",
+			T1_transfer, PWM1, T2_transfer, PWM2);
 	ser->printf("starting left motor impulse response...\n\r");
 	ser->getc();
 	t_timer.start();
 	motor_l->setPwm(PWM1);
-	while (t < T1 && !ser->readable()) {
+	while (t < T1_transfer && !ser->readable()) {
 		t = t_timer.read();
 		dl = qei_l->getQei(&val_l);
 		ser->printf("%f\t%f\n\r", t, dl);
 	}
 	motor_l->setPwm(PWM2);
-	while (t < T2 && !ser->readable()) {
+	while (t < T2_transfer && !ser->readable()) {
 		t = t_timer.read();
 		dl = qei_l->getQei(&val_l);
 		ser->printf("%f\t%f\n\r", t, dl);
@@ -116,16 +118,93 @@ void transfer2(Serial* const ser, LMD18200* const motor_l,
 	t = t_timer.read();
 	t_timer.start();
 	motor_r->setPwm(PWM1);
-	while (t < T1 && !ser->readable()) {
+	while (t < T1_transfer && !ser->readable()) {
 		t = t_timer.read();
 		dr = qei_r->getQei(&val_r);
 		ser->printf("%f\t%f\n\r", t, dr);
 	}
 	motor_r->setPwm(PWM2);
-	while (t < T2 && !ser->readable()) {
+	while (t < T2_transfer && !ser->readable()) {
 		t = t_timer.read();
 		dr = qei_r->getQei(&val_r);
 		ser->printf("%f\t%f\n\r", t, dr);
 	}
 	motor_r->setPwm(0.0f);
+}
+
+void pid_test(Serial* const ser, SpeedBlock* const speed_block)
+{
+	float t = 0.0f;
+	float SPspeed_l = 1.0f;
+	float SPspeed_r = 1.0f;
+	float PVspeed_l = 0.0f;
+	float PVspeed_r = 0.0f;
+	float pwm_l = 0.0f;
+	float pwm_r = 0.0f;
+	ser->printf("pattern:\n\riteration\tSPspeed_l\tPVspeed_l\tpwm_l\t\t"
+			"SPspeed_r\tPVspeed_r\tpwm_r\n\r");
+	ser->printf("starting speed test...\n\r");
+	speed_block->setSpeed(SPspeed_l, SPspeed_r);
+	ser->getc();
+	while (1) {
+		speed_block->getPVspeed(&PVspeed_l, &PVspeed_r);
+		speed_block->getPWM(&pwm_l, &pwm_r);
+		ser->printf("%f\t%f\t%f\t%f\t%f\t%f\t%f\n\r",
+				t, SPspeed_l, PVspeed_l, pwm_l, SPspeed_r, PVspeed_r, pwm_r);
+		t += 0.003f;
+		speed_block->refresh();
+		ser->getc();
+	}
+}
+
+void speed_test(Serial* const ser, SpeedBlock* const speed_block)
+{
+	float t = 0.0f;
+	float SPspeed_l = 0.0f;
+	float SPspeed_r = 0.0f;
+	float PVspeed_l = 0.0f;
+	float PVspeed_r = 0.0f;
+	float pwm_l = 0.0f;
+	float pwm_r = 0.0f;
+	Timer t_timer;
+	ser->printf("pattern:\n\rtime\t\tSPspeed_l\tPVspeed_l\tpwm_l\t\t"
+			"SPspeed_r\tPVspeed_r\tpwm_r\n\r");
+	ser->printf("starting speed test...\n\r");
+	ser->printf("starting translation test...\n\r");
+	ser->getc();
+	t_timer.start();
+	speed_block->start();
+	while (!ser->readable()) {
+		t = t_timer.read();
+		speed_block->getPVspeed(&PVspeed_l, &PVspeed_r);
+		speed_block->getPWM(&pwm_l, &pwm_r);
+		ser->printf("%f\t%f\t%f\t%f\t%f\t%f\t%f\n\r",
+				t, SPspeed_l, PVspeed_l, pwm_l, SPspeed_r, PVspeed_r, pwm_r);
+		SPspeed_l = min(SPspeed_l + DELTA_V, MAX_SP);
+		SPspeed_r = min(SPspeed_r + DELTA_V, MAX_SP);
+		speed_block->setSpeed(SPspeed_l, SPspeed_r);
+		wait(0.1f);
+	}
+	ser->getc();
+	speed_block->reset();
+	ser->printf("starting rotation test...\n\r");
+	t_timer.stop();
+	t_timer.reset();
+	SPspeed_l = 0.0f;
+	SPspeed_r = 0.0f;
+	ser->getc();
+	t_timer.start();
+	speed_block->start();
+	while (!ser->readable()) {
+		t = t_timer.read();
+		speed_block->getPVspeed(&PVspeed_l, &PVspeed_r);
+		speed_block->getPWM(&pwm_l, &pwm_r);
+		ser->printf("%f\t%f\t%f\t%f\t%f\t%f\t%f\n\r",
+				t, SPspeed_l, PVspeed_l, pwm_l, SPspeed_r, PVspeed_r, pwm_r);
+		SPspeed_l = min(SPspeed_l + DELTA_V, MAX_SP);
+		SPspeed_r = -min(-SPspeed_r + DELTA_V, MAX_SP);
+		speed_block->setSpeed(SPspeed_l, SPspeed_r);
+		wait(0.1f);
+	}
+	speed_block->reset();
 }
