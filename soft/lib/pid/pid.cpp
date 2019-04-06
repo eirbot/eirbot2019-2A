@@ -63,17 +63,12 @@ void Pid::reset()
 float Pid::getPid()
 {
 	float sum = 0.0f;
-	float sum1 = 0.0f;
-	float sum2 = 0.0f;
 	for (int i = 0; i < len_err; i++) {
 		sum += coef_err[i] * err_ca[i];
-		sum1 += coef_err[i] * err_ca[i];
 	}
 	for (int i = 0; i < len_co; i++) {
 		sum -= coef_co[i] * co_ca[i];
-		sum2 -= coef_co[i] * co_ca[i];
 	}
-	printf("co_err:%f\tco_co:%f\r\n", sum1, sum2);
 	return sum;
 }
 
