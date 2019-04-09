@@ -67,7 +67,7 @@ float Pid::getPid()
 		sum += coef_err[i] * err_ca[i];
 	}
 	for (int i = 0; i < len_co; i++) {
-		sum -= coef_co[i] * co_ca[i];
+		sum -= coef_co[i+1] * co_ca[i];
 	}
 	return sum;
 }

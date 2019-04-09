@@ -18,10 +18,10 @@ Serial ser(USBTX, USBRX);
 int err = 0;
 #endif
 
-float coef_err_l[] = {0.06357f, -0.05630f, -0.06346f, 0.05641f};
-float coef_co_l[] = {-1.77700f, 0.81490f, -0.03811f};
-float coef_err_r[] = {0.03211f, -0.03061f, -0.03211f, 0.03062f};
-float coef_co_r[] = {-2.37400f, 1.80500f, -0.4313f};
+float coef_err_l[] = {0.05* 0.06357f, 0.05* -0.05630f, 0.05* -0.06346f, 0.05* 0.05641f};
+float coef_co_l[] = {1.0f, -1.77700f, 0.81490f, -0.03811f};
+float coef_err_r[] = {0.05* 0.06357f, 0.05* -0.05630f, 0.05* -0.06346f, 0.05* 0.05641f};
+float coef_co_r[] = {1.0f, -1.77700f, 0.81490f, -0.03811f};
 
 DigitalOut led = LED2;
 Qei qei_l(ENCODER_TIM_LEFT, &err);
@@ -50,13 +50,16 @@ int main()
 	angle_calibration(&ser, &qei_l, &qei_r);
 #endif
 #ifdef TRANSFER
-	transfer2(&ser, &motor_l, &motor_r, &qei_l, &qei_r);
+	transfer(&ser, &motor_l, &motor_r, &qei_l, &qei_r);
 #endif
 #ifdef PID
 	pid_test(&ser, &speed_block);
 #endif
 #ifdef SPEED
 	speed_test(&ser, &speed_block);
+#endif
+#ifdef SQUARE
+	square(&ser, &speed_block);
 #endif
 #endif
 	speed_block.reset();

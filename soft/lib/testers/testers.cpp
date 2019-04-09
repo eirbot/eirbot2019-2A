@@ -56,6 +56,8 @@ void transfer(Serial* const ser, LMD18200* const motor_l,
 	float dl = 0.0f;
 	float dr = 0.0f;
 	Timer t_timer;
+	motor_l->setDirection(DIR_FORWARD);
+	motor_r->setDirection(DIR_FORWARD);
 	ser->printf("impulse response parameters:\n\r");
 	ser->printf("t1: %fs, pwm1: %f, t2:%fs, pwm2: %f\n\r",
 			T1_transfer, PWM1, T2_transfer, PWM2);
@@ -160,8 +162,8 @@ void pid_test(Serial* const ser, SpeedBlock* const speed_block)
 void speed_test(Serial* const ser, SpeedBlock* const speed_block)
 {
 	float t = 0.0f;
-	float SPspeed_l = 0.0f;
-	float SPspeed_r = 0.0f;
+	float SPspeed_l = 50.0f;
+	float SPspeed_r = 50.0f;
 	float PVspeed_l = 0.0f;
 	float PVspeed_r = 0.0f;
 	float pwm_l = 0.0f;
@@ -180,10 +182,10 @@ void speed_test(Serial* const ser, SpeedBlock* const speed_block)
 		speed_block->getPWM(&pwm_l, &pwm_r);
 		ser->printf("%f\t%f\t%f\t%f\t%f\t%f\t%f\n\r",
 				t, SPspeed_l, PVspeed_l, pwm_l, SPspeed_r, PVspeed_r, pwm_r);
-		SPspeed_l = min(SPspeed_l + DELTA_V, MAX_SP);
-		SPspeed_r = min(SPspeed_r + DELTA_V, MAX_SP);
+		//SPspeed_l = min(SPspeed_l + DELTA_V, MAX_SP);
+		//SPspeed_r = min(SPspeed_r + DELTA_V, MAX_SP);
 		speed_block->setSpeed(SPspeed_l, SPspeed_r);
-		wait(0.1f);
+		wait(0.01f);
 	}
 	ser->getc();
 	speed_block->reset();
