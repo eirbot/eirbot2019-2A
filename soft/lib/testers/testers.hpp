@@ -6,6 +6,7 @@
 #include <qei.hpp>
 #include <lmd18200.hpp>
 #include <speed_block.hpp>
+#include <odometry.hpp>
 
 #define LENGTH_TEST 5.0f
 void length_calibration(Serial* const ser, Qei* const qei_l, Qei* const qei_r);
@@ -23,9 +24,12 @@ void transfer2(Serial* const ser, LMD18200* const motor_l,
 		LMD18200* const motor_r, Qei* const qei_l, Qei* const qei_r);
 
 #define DELTA_V 1.0f
-#define MAX_SP 50.0f
+#define MAX_SP 30.0f
 void pid_test(Serial* const ser, SpeedBlock* const speed_block);
 void speed_test(Serial* const ser, SpeedBlock* const speed_block);
+void square(Serial* const ser, SpeedBlock* const speed_block);
+
+void test_odometry(Serial*const ser, Odometry* const odometry);
 
 
 #endif

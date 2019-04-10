@@ -210,3 +210,40 @@ void speed_test(Serial* const ser, SpeedBlock* const speed_block)
 	}
 	speed_block->reset();
 }
+
+void square(Serial* const ser, SpeedBlock* const speed_block)
+{
+	float SPspeed;
+	Timer t_timer;
+	ser->printf("starting square example...\n\r");
+	t_timer.start();
+	speed_block->start();
+	while (!ser->readable()) {
+		speed_block->setSpeed(0.0f, 0.0f);
+		SPspeed = 0.0f;
+		t_timer.reset();
+		while (t_timer.read() < 1.0f && !ser->readable());
+		t_timer.reset();
+		while (t_timer.read() < 2.5f && !ser->readable())
+		{
+			SPspeed = min(SPspeed + DELTA_V, MAX_SP);
+			speed_block->setSpeed(SPspeed, SPspeed);
+		}
+		speed_block->setSpeed(0.0f, 0.0f);
+		SPspeed = 0.0f;
+		t_timer.reset();
+		while (t_timer.read() < 1.0f && !ser->readable());
+		t_timer.reset();
+		while (t_timer.read() < 0.85f && !ser->readable())
+		{
+			SPspeed = min(SPspeed + DELTA_V, MAX_SP);
+			speed_block->setSpeed(SPspeed, -SPspeed);
+		}
+	}
+	speed_block->reset();
+}
+
+void test_odometry(Serial*const ser, Odometry* const odometry)
+{
+	int x, y, z;
+}

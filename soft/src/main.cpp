@@ -4,6 +4,7 @@
 #include <pid.hpp>
 #include <lmd18200.hpp>
 #include <speed_block.hpp>
+#include <odometry.hpp>
 
 #ifdef DEBUG
 #include <debug.hpp>
@@ -31,6 +32,7 @@ Pid pid_r(coef_err_r, NB_COEF_ERR, coef_co_r, NB_COEF_CO);
 LMD18200 motor_l(PWM_L, DIR_L, BREAK_L, DIR_FWD_L, PERIOD_PWM);
 LMD18200 motor_r(PWM_R, DIR_R, BREAK_R, DIR_FWD_R, PERIOD_PWM);
 SpeedBlock speed_block(&qei_l, &pid_l, &motor_l, &qei_r, &pid_r, &motor_r);
+Odometry odometry(&qei_l, &qei_r);
 
 
 int main()
@@ -42,7 +44,7 @@ int main()
 	led = 0;
 	ser.printf("\r\nstart\r\n");
 	ser.printf("error code: %d\r\n", err);
-	ser.getc();
+	//ser.getc();
 #ifdef LENGTH_CALIB
 	length_calibration(&ser, &qei_l, &qei_r);
 #endif
@@ -60,6 +62,9 @@ int main()
 #endif
 #ifdef SQUARE
 	square(&ser, &speed_block);
+#endif
+#ifdef ODOMETRY
+	test_odometry(&ser, &odometry);
 #endif
 #endif
 	speed_block.reset();
