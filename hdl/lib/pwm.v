@@ -4,7 +4,11 @@
  * Documentation
  */
 
-`include "config.vh"
+`ifndef PWM_V
+`define PWM_V
+
+`include "src/config.vh"
+`include "counter.v"
 
 module pwm #(
 	parameter freq = `PWM_FREQ,
@@ -78,3 +82,5 @@ generate
 endgenerate
 
 endmodule
+
+`endif

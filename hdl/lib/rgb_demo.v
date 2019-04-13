@@ -1,3 +1,6 @@
+`ifndef RGBDEMO_V
+`define RGBDEMO_V
+
 module rgb_demo(
 	input clk,
 	input rst,
@@ -49,3 +52,5 @@ begin
 end
 
 endmodule
+
+`endif

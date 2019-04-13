@@ -8,7 +8,13 @@
 `define LED_NBPC 8
 
 // PWM parameters
-`define PWM_FREQ `CLK_FREQ/2**11
+`define PWM_FREQ (`CLK_FREQ/2**11)
 `define PWM_RES 10
+
+// QEI parameters
+`define QEI_RES 16
+
+// PID parameters
+`define PID_RES 32
 
 `endif

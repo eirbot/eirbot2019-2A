@@ -4,10 +4,13 @@
  * Documentation
  */
 
-`include "config.vh"
+`ifndef QEI_V
+`define QEI_V
+
+`include "src/config.vh"
 
 module qei #(
-	parameter nbits = 16
+	parameter nbits = `QEI_RES
 )(
 	input clk,
 	input rst,
@@ -47,3 +50,5 @@ begin
 end
 
 endmodule
+
+`endif

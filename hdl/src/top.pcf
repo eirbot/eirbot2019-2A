@@ -1,6 +1,3 @@
-# CLK
-set_io clk_o 38
-
 # RST
 set_io rst 23
 
@@ -10,8 +7,11 @@ set_io ledB 40
 set_io ledR 41
 
 # PWM
-set_io pwm_o 28
+set_io pwmL 28
+set_io pwmR 46
 
 # QEI
-set_io qeiL_A 34
-set_io qeiL_B 37
+set_io qeiL_A 37
+set_io qeiL_B 31
+set_io qeiR_A 35
+set_io qeiR_B 32
