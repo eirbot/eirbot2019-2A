@@ -19,10 +19,10 @@ Serial ser(USBTX, USBRX);
 int err = 0;
 #endif
 
-float coef_err_l[] = {0.05* 0.06357f, 0.05* -0.05630f, 0.05* -0.06346f, 0.05* 0.05641f};
-float coef_co_l[] = {1.0f, -1.77700f, 0.81490f, -0.03811f};
-float coef_err_r[] = {0.05* 0.06357f, 0.05* -0.05630f, 0.05* -0.06346f, 0.05* 0.05641f};
-float coef_co_r[] = {1.0f, -1.77700f, 0.81490f, -0.03811f};
+float coef_err_l[] = {0.01* 0.8659f, 0.01* -0.7513f, 0.01* -0.8629, 0.01* 0.7543};
+float coef_co_l[] = {1.0f, -0.9107f, -0.1491f, 0.05982f};
+float coef_err_r[] = {0.01* 0.8659f, 0.01* -0.7513f, 0.01* -0.8629, 0.01* 0.7543};
+float coef_co_r[] = {1.0f, -0.9107f, -0.1491f, 0.05982f};
 
 DigitalOut led = LED2;
 Qei qei_l(ENCODER_TIM_LEFT, &err);
