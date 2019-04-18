@@ -10,6 +10,7 @@
 `include "lib/pwm.v"
 `include "lib/qei.v"
 `include "lib/rgb.v"
+`include "lib/alu.v"
 
 module top(
 	// Global inputs
@@ -35,6 +36,9 @@ wire clk;
 wire [`QEI_RES-1:0] qeiL;
 wire [`QEI_RES-1:0] qeiR;
 
+// Tests
+wire [23:0] mulout;
+
 // Internal oscillator to generate clock
 SB_HFOSC inthosc (
 	.CLKHFPU(1'b1),
@@ -49,7 +53,7 @@ rgb #(
 	.clk(clk),
 	.rst(rst),
 	.en(1'b1),
-	.in(24'h0f0f0f),
+	.in(mulout),
 	.ledR(ledR),
 	.ledG(ledG),
 	.ledB(ledB)
@@ -101,6 +105,21 @@ qei #(
 	.in_A(qeiR_A),
 	.in_B(qeiR_B),
 	.val(qeiR)
+);
+
+alu #(
+) m_alu (
+	.clk(clk),
+	.rst(rst),
+	.clr(1'b0),
+	.en(1'b1),
+	.inA(32'h00000010), // 16
+	.inB(32'h00000005), // 5
+	.inC(32'h00000001), // 10
+	.inD(32'h0000000C), // 13 //65549
+	.key_in(),
+	.out(mulout),
+	.key_out(),
 );
 
 endmodule
