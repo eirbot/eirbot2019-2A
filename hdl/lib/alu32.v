@@ -9,19 +9,19 @@
 
 `include "src/config.vh"
 
-`define ADD 2'b01
-`define SUB 2'b10
-`define MUL 2'b11
+`define ADD 8'h01
+`define SUB 8'h02
+`define MUL 8'h03
 
 module alu32 #(
-	parameter adder = 1'b1,
+	parameter addsuber = 1'b1,
 	parameter multiplier = 1'b1
 )(
 	input clk,
 	input rst,
 	input clr,
 	input en,
-	input [1:0] op,
+	input [7:0] op,
 	input [7:0] key_in,
 	input [31:0] inA,
 	input [31:0] inB,
@@ -31,17 +31,18 @@ module alu32 #(
 
 
 generate
-	if (adder) begin
-		wire [31:0] addO;
+	if (addsuber) begin
+		wire [31:0] addsubO;
+		wire addsub_select = (op == `SUB) ? 1'b1 : 1'b0;
 		SB_MAC16 #(
 			.B_SIGNED(1'b0),
 			.A_SIGNED(1'b0),
 			.MODE_8x8(1'b0),
-			.BOTADDSUB_CARRYSELECT(2'b00),
+			.BOTADDSUB_CARRYSELECT(2'b11),
 			.BOTADDSUB_UPPERINPUT(1'b1),
 			.BOTADDSUB_LOWERINPUT(2'b00),
 			.BOTOUTPUT_SELECT(2'b00),
-			.TOPADDSUB_CARRYSELECT(2'b10),
+			.TOPADDSUB_CARRYSELECT(2'b11),
 			.TOPADDSUB_UPPERINPUT(1'b1),
 			.TOPADDSUB_LOWERINPUT(2'b00),
 			.TOPOUTPUT_SELECT(2'b00),
@@ -53,11 +54,11 @@ generate
 			.B_REG(1'b0),
 			.A_REG(1'b0),
 			.C_REG(1'b0)
-		) m_adder (
-			.A(inA[31:16]),
-			.B(inA[15:0]),
-			.C(inB[31:16]),
-			.D(inB[15:0]),
+		) m_addsuber (
+			.A(inB[31:16]),
+			.B(inB[15:0]),
+			.C(inA[31:16]),
+			.D(inA[15:0]),
 			.CLK(clk),
 			.CE(1'b1),
 			.IRSTTOP(rst),
@@ -72,11 +73,11 @@ generate
 			.OHOLDBOT(1'b0),
 			.OLOADTOP(1'b0),
 			.OLOADBOT(1'b0),
-			.ADDSUBTOP(1'b0),
-			.ADDSUBBOT(1'b0),
+			.ADDSUBTOP(addsub_select),
+			.ADDSUBBOT(addsub_select),
 			.CO(),
 			.CI(1'b0),
-			.O(addO)
+			.O(addsubO)
 		);
 	end
 	if (multiplier) begin
@@ -147,7 +148,7 @@ generate
 			.O(mulO)
 		);
 	end
-	if (!adder && !multiplier) begin
+	if (!addsuber && !multiplier) begin
 		initial begin
 			$display("alu32: Invalid parameters");
 			$display("no operation selected");
@@ -164,8 +165,12 @@ generate
 			state <= 2'b00;
 			buff_mul <= 32'h00000000;
 		end else if (en) begin
-			if (op == `ADD && adder) begin
-				out <= addO;
+			if (op == `ADD && addsuber) begin
+				out <= addsubO;
+				key_out <= key_in;
+				state <= 2'b00;
+			end else if (op == `SUB && addsuber) begin
+				out <= addsubO;
 				key_out <= key_in;
 				state <= 2'b00;
 			end else if (op == `MUL && multiplier) begin
