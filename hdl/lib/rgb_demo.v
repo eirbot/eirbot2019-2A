@@ -23,30 +23,20 @@ counter #(
 	.overflow(phase_next)
 );
 
-always @(posedge clk)
-begin
-	if (phase == 1)
-	begin
+always @(posedge clk) begin
+	if (phase == 1) begin
 		out <= 24'hff0000;
-	end
-	else if (phase == 2)
-	begin
+	end else if (phase == 2) begin
 		out <= 24'h00ff00;
-	end
-	else if (phase == 3)
-	begin
+	end else if (phase == 3) begin
 		out <= 24'h0000ff;
-	end
-	else
-	begin
+	end else begin
 		out <= 24'hffffff;
 	end
 end
 
-always @(posedge clk)
-begin
-	if (phase_next)
-	begin
+always @(posedge clk) begin
+	if (phase_next) begin
 		phase = phase + 1;
 	end
 end

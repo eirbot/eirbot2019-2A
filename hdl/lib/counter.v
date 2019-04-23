@@ -24,75 +24,48 @@ module counter #(
 );
 
 generate
-	if (step > 0 && max-min < 2**nbits)
-	begin
-		always @(posedge clk)
-		begin
-			if (rst || clr)
-			begin
+	if (step > 0 && max-min < 2**nbits) begin
+		always @(posedge clk) begin
+			if (rst || clr) begin
 				count <= 0;
-			end
-			else if (en)
-			begin
-				if (count + step > max)
-				begin
+			end else if (en) begin
+				if (count + step > max) begin
 					count <= min;
 					overflow <= 1;
-				end
-				else
-				begin
+				end else begin
 					count <= count + step;
 					overflow <= 0;
 				end
-			end
-			else
-			begin
+			end else begin
 				count <= count;
 				overflow <= overflow;
 			end
 		end
-	end
-	else if (step < 0 && max-min < 2**nbits)
-	begin
-		always @(posedge clk)
-		begin
-			if (rst || clr)
-			begin
+	end else if (step < 0 && max-min < 2**nbits) begin
+		always @(posedge clk) begin
+			if (rst || clr) begin
 				count <= 0;
-			end
-			else if (en)
-			begin
-				if (count + step < min)
-				begin
+			end else if (en) begin
+				if (count + step < min) begin
 					count <= max;
 					overflow <= 1;
-				end
-				else
-				begin
+				end else begin
 					count <= count + step;
 					overflow <= 0;
 				end
-			end
-			else
-			begin
+			end else begin
 				count <= count;
 				overflow <= overflow;
 			end
 		end
-	end
-	else if (step == 0)
-	begin
-		initial
-		begin
+	end else if (step == 0) begin
+		initial begin
 			$display("counter: invalid parameters");
 			$display("Null step");
 			$finish(1);
 		end
-	end
-	else
-	begin
-		initial
-		begin
+	end else begin
+		initial begin
 			$display("counter: invalid parameters");
 			$display("Out of range");
 			$finish(1);

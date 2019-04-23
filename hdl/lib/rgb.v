@@ -28,19 +28,15 @@ reg ledG_pwm;
 reg ledB_pwm;
 wire [nbpc-1:0] count;
 
-always @(posedge clk)
-begin
-	if (rst || !en)
-	begin
+always @(posedge clk) begin
+	if (rst || !en) begin
 		ledR_pwm <= 1'b0;
 		ledG_pwm <= 1'b0;
 		ledB_pwm <= 1'b0;
-	end
-	else
-	begin
-		ledR_pwm <= count<in[3*nbpc-1:2*nbpc] ? 1'b1 : 1'b0;
-		ledG_pwm <= count<in[2*nbpc-1:1*nbpc] ? 1'b1 : 1'b0;
-		ledB_pwm <= count<in[1*nbpc-1:0*nbpc] ? 1'b1 : 1'b0;
+	end else begin
+		ledR_pwm <= count < in[3*nbpc-1:2*nbpc] ? 1'b1 : 1'b0;
+		ledG_pwm <= count < in[2*nbpc-1:1*nbpc] ? 1'b1 : 1'b0;
+		ledB_pwm <= count < in[1*nbpc-1:0*nbpc] ? 1'b1 : 1'b0;
 	end
 end
 
@@ -59,9 +55,14 @@ counter #(
 );
 
 // LED Driver
-SB_RGBA_DRV RGBA_DRIVER (
+SB_RGBA_DRV #(
+	.CURRENT_MODE("0b1"),
+	.RGB0_CURRENT("0b000111"),
+	.RGB1_CURRENT("0b000111"),
+	.RGB2_CURRENT("0b000111")
+) RGBA_DRIVER (
 	.CURREN(1'b1),
-	.RGBLEDEN(1'b1),
+	.RGBLEDEN(en),
 	.RGB0PWM(ledG_pwm),
 	.RGB1PWM(ledB_pwm),
 	.RGB2PWM(ledR_pwm),
@@ -69,10 +70,6 @@ SB_RGBA_DRV RGBA_DRIVER (
 	.RGB1(ledB),
 	.RGB2(ledR)
 );
-defparam RGBA_DRIVER.CURRENT_MODE = "0b1";
-defparam RGBA_DRIVER.RGB0_CURRENT = "0b000111";
-defparam RGBA_DRIVER.RGB1_CURRENT = "0b000111";
-defparam RGBA_DRIVER.RGB2_CURRENT = "0b000111";
 
 endmodule
 

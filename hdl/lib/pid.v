@@ -24,8 +24,7 @@ module pid #(
 	output reg [nbits-1:0] out
 );
 
-always @(posedge clk)
-begin
+always @(posedge clk) begin
 	out <= u_i*v_i;
 end
 

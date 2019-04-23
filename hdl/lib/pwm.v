@@ -30,8 +30,7 @@ wire counter_en;
 wire [nbits_pwm-1:0] count;
 
 generate
-	if (max_clk_divider >= 0)
-	begin
+	if (max_clk_divider >= 0) begin
 		counter #(
 			.nbits(nbits_clk_divider),
 			.min(0),
@@ -60,8 +59,7 @@ generate
 			.overflow()
 		);
 
-		always @(posedge clk)
-		begin
+		always @(posedge clk) begin
 			if (rst || !en) begin
 				out <= 0;
 			end else begin
@@ -69,11 +67,8 @@ generate
 			end
 		end
 
-	end
-	else
-	begin
-		initial
-		begin
+	end else begin
+		initial begin
 			$display("pwm: Invalid parameters");
 			$display("frequency too high for precision");
 			$finish(1);

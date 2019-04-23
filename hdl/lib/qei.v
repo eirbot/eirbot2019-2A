@@ -24,24 +24,19 @@ module qei #(
 reg prev_A;
 reg prev_B;
 
-always @(posedge clk)
-begin
-	if (rst || clr)
-	begin
+always @(posedge clk) begin
+	if (rst || clr) begin
 		val <= 0;
-	end
-	else if (en)
-	begin
-		val <= (in_A != prev_A) && in_A && (in_B == prev_B) && !in_B ? val+1 :
-				(in_A == prev_A) && in_A && (in_B != prev_B) && in_B ? val+1 :
-				(in_A != prev_A) && !in_A && (in_B == prev_B) && in_B ? val+1 :
+	end else if (en) begin
+		val <=	(in_A != prev_A) &&  in_A && (in_B == prev_B) && !in_B ? val+1 :
+				(in_A == prev_A) &&  in_A && (in_B != prev_B) &&  in_B ? val+1 :
+				(in_A != prev_A) && !in_A && (in_B == prev_B) &&  in_B ? val+1 :
 				(in_A == prev_A) && !in_A && (in_B != prev_B) && !in_B ? val+1 :
 
-
-				(in_A != prev_A) && in_A && (in_B == prev_B) && in_B ? val-1 :
-				(in_A == prev_A) && in_A && (in_B != prev_B) && !in_B ? val-1 :
+				(in_A != prev_A) &&  in_A && (in_B == prev_B) &&  in_B ? val-1 :
+				(in_A == prev_A) &&  in_A && (in_B != prev_B) && !in_B ? val-1 :
 				(in_A != prev_A) && !in_A && (in_B == prev_B) && !in_B ? val-1 :
-				(in_A == prev_A) && !in_A && (in_B != prev_B) && in_B ? val-1 :
+				(in_A == prev_A) && !in_A && (in_B != prev_B) &&  in_B ? val-1 :
 
 				val;
 	end
