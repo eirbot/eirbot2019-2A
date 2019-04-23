@@ -32,8 +32,9 @@ module alu32 #(
 
 generate
 	if (addsuber) begin
+		wire carry_in = (op == `SUB) ? 1'b1 : 1'b0;
+		wire [31:0] addsub_B = (op == `SUB) ? ~inB : inB;
 		wire [31:0] addsubO;
-		wire addsub_select = (op == `SUB) ? 1'b1 : 1'b0;
 		SB_MAC16 #(
 			.B_SIGNED(1'b0),
 			.A_SIGNED(1'b0),
@@ -42,7 +43,7 @@ generate
 			.BOTADDSUB_UPPERINPUT(1'b1),
 			.BOTADDSUB_LOWERINPUT(2'b00),
 			.BOTOUTPUT_SELECT(2'b00),
-			.TOPADDSUB_CARRYSELECT(2'b11),
+			.TOPADDSUB_CARRYSELECT(2'b10),
 			.TOPADDSUB_UPPERINPUT(1'b1),
 			.TOPADDSUB_LOWERINPUT(2'b00),
 			.TOPOUTPUT_SELECT(2'b00),
@@ -55,8 +56,8 @@ generate
 			.A_REG(1'b0),
 			.C_REG(1'b0)
 		) m_addsuber (
-			.A(inB[31:16]),
-			.B(inB[15:0]),
+			.A(addsub_B[31:16]),
+			.B(addsub_B[15:0]),
 			.C(inA[31:16]),
 			.D(inA[15:0]),
 			.CLK(clk),
@@ -73,10 +74,10 @@ generate
 			.OHOLDBOT(1'b0),
 			.OLOADTOP(1'b0),
 			.OLOADBOT(1'b0),
-			.ADDSUBTOP(addsub_select),
-			.ADDSUBBOT(addsub_select),
+			.ADDSUBTOP(1'b0),
+			.ADDSUBBOT(1'b0),
 			.CO(),
-			.CI(1'b0),
+			.CI(carry_in),
 			.O(addsubO)
 		);
 	end
