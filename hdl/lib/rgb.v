@@ -8,7 +8,7 @@
 `define RGB_V
 
 `include "src/config.vh"
-`include "counter.v"
+`include "lib/counter.v"
 
 module rgb #(
 	parameter nbpc = `LED_NBPC,

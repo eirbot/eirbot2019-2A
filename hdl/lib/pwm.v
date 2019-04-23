@@ -8,7 +8,7 @@
 `define PWM_V
 
 `include "src/config.vh"
-`include "counter.v"
+`include "lib/counter.v"
 
 module pwm #(
 	parameter freq = `PWM_FREQ,

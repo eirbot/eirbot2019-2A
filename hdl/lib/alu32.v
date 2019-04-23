@@ -8,7 +8,6 @@
 `define ALU_V
 
 `include "src/config.vh"
-`include "counter.v"
 
 `define ADD 2'b01
 `define SUB 2'b10
@@ -163,7 +162,7 @@ generate
 			out <= 32'h00000000;
 			key_out <= 8'h00;
 			state <= 2'b00;
-			buff_mul <= 8'h00000000;
+			buff_mul <= 32'h00000000;
 		end else if (en) begin
 			if (op == `ADD && adder) begin
 				out <= addO;
