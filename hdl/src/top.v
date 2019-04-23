@@ -4,13 +4,13 @@
  * Documentation
  */
 
-`include "config.vh"
+`include "src/config.vh"
 `include "lib/counter.v"
 `include "lib/pid.v"
 `include "lib/pwm.v"
 `include "lib/qei.v"
 `include "lib/rgb.v"
-`include "lib/alu.v"
+`include "lib/alu32.v"
 
 module top(
 	// Global inputs
@@ -37,7 +37,8 @@ wire [`QEI_RES-1:0] qeiL;
 wire [`QEI_RES-1:0] qeiR;
 
 // Tests
-wire [23:0] mulout;
+wire [31:0] aluO;
+reg [23:0] Irgb;
 
 // Internal oscillator to generate clock
 SB_HFOSC inthosc (
@@ -53,7 +54,7 @@ rgb #(
 	.clk(clk),
 	.rst(rst),
 	.en(1'b1),
-	.in(mulout),
+	.in(Irgb),
 	.ledR(ledR),
 	.ledG(ledG),
 	.ledB(ledB)
@@ -107,19 +108,38 @@ qei #(
 	.val(qeiR)
 );
 
-alu #(
-) m_alu (
+`define INA 32'h23456789
+`define INB 32'h01fedcba
+wire [7:0] keyO;
+
+alu32 #(
+	.adder(1'b1),
+	.multiplier(1'b1)
+) m_alu32 (
 	.clk(clk),
 	.rst(rst),
 	.clr(1'b0),
 	.en(1'b1),
-	.inA(32'h00000010), // 16
-	.inB(32'h00000005), // 5
-	.inC(32'h00000001), // 10
-	.inD(32'h0000000C), // 13 //65549
-	.key_in(),
-	.out(mulout),
-	.key_out(),
+	.op(`MUL),
+	.key_in(8'h05),
+	.inA(`INA),
+	.inB(`INB),
+	.out(aluO),
+	.key_out(keyO)
 );
+
+always @(posedge clk) begin
+	if (rst) begin
+		Irgb <= 24'h000000;
+	end else if (aluO == `INA + `INB) begin
+		Irgb <= 24'h00000f;
+	end else if (aluO == 32'h62ad8854 && keyO == 8'h05) begin
+		Irgb <= 24'h00ff00;
+	end else if (aluO == 32'h00000000 && keyO == 8'h00) begin
+		Irgb <= 24'h000000;
+	end else begin
+		Irgb <= 24'hff0000;
+	end
+end
 
 endmodule
