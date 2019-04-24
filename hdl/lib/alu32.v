@@ -81,15 +81,17 @@ generate
 		);
 	end
 	if (multiplier) begin
-		wire [15:0] mulA = state == 0 ? inA[31:16] :
-							state == 1 ? inA[15:0] :
-							state == 2 ? inA[31:16] :
-							state == 3 ? inA[15:0] :
+		wire [31:0] inA_abs = inA[31] ? ~inA+1 : inA;
+		wire [31:0] inB_abs = inB[31] ? ~inB+1 : inB;
+		wire [15:0] mulA = state == 0 ? inA_abs[31:16] :
+							state == 1 ? inA_abs[15:0] :
+							state == 2 ? inA_abs[31:16] :
+							state == 3 ? inA_abs[15:0] :
 							16'h0000;
-		wire [15:0] mulB = state == 0 ? inB[31:16] :
-							state == 1 ? inB[15:0] :
-							state == 2 ? inB[15:0] :
-							state == 3 ? inB[31:16] :
+		wire [15:0] mulB = state == 0 ? inB_abs[31:16] :
+							state == 1 ? inB_abs[15:0] :
+							state == 2 ? inB_abs[15:0] :
+							state == 3 ? inB_abs[31:16] :
 							16'h0000;
 		wire [15:0] mulC = state == 0 ? 16'h0000 :
 							state == 1 ? 16'h0000 :
@@ -103,8 +105,8 @@ generate
 							16'h0000;
 		wire [31:0] mulO;
 		SB_MAC16 #(
-			.B_SIGNED(1'b0),
 			.A_SIGNED(1'b0),
+			.B_SIGNED(1'b0),
 			.MODE_8x8(1'b0),
 			.BOTADDSUB_CARRYSELECT(2'b00),
 			.BOTADDSUB_UPPERINPUT(1'b1),
@@ -176,19 +178,19 @@ generate
 			end else if (op == `MUL && multiplier) begin
 				state <= state + 1;
 				if (state == 0) begin
-					out <= 32'h00000000;
+					out <= 32'hxxxxxxxx;
 					key_out <= 8'h00;
 					buff_mul[31:16] <= mulO[15:0];
 				end else if (state == 1) begin
-					out <= 32'h00000000;
+					out <= 32'hxxxxxxxx;
 					key_out <= 8'h00;
 					buff_mul[15:0] <= mulO[31:16];
 				end else if (state == 2) begin
-					out <= 32'h00000000;
+					out <= 32'hxxxxxxxx;
 					key_out <= 8'h00;
 					buff_mul <= mulO;
 				end else begin
-					out <= mulO;
+					out <= inA[31] ^ inB[31] ? ~mulO+1 : mulO;
 					key_out <= key_in;
 				end
 			end else begin
