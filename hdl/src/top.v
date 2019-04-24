@@ -108,10 +108,10 @@ qei #(
 	.val(qeiR)
 );
 
-`define INA 32'h23456789
-`define INB 32'h01fedcba
-//`define INA 32'hffff0000
-//`define INB 32'h0000f000
+//`define INA 32'h23456789
+//`define INB 32'h01fedcba
+`define INA 32'hffc6b000
+`define INB 32'hffd4d800
 wire [7:0] keyO;
 
 alu32 #(
@@ -122,7 +122,7 @@ alu32 #(
 	.rst(rst),
 	.clr(1'b0),
 	.en(1'b1),
-	.op(`SUB),
+	.op(`MUL),
 	.key_in(8'h05),
 	.inA(`INA),
 	.inB(`INB),
@@ -134,11 +134,21 @@ always @(posedge clk) begin
 	if (rst) begin
 		Irgb <= 24'h000000;
 	end else if (keyO == 8'h05) begin
+		/*
 		if (aluO == `INA + `INB) begin
 			Irgb <= 24'h000800;
 		end else if (aluO == `INA - `INB) begin
 			Irgb <= 24'h000008;
 		end else if (aluO == 32'h62ad8854) begin
+			Irgb <= 24'h00f0f0;
+		end else if (aluO == 32'hffff0000) begin
+			Irgb <= 24'h00f0f0;
+		*/
+		if (aluO == 32'hfc9db000) begin
+			Irgb <= 24'h000800;
+		end else if (aluO == 32'hfc74a000) begin
+			Irgb <= 24'h000008;
+		end else if (aluO == 32'h09a96480) begin
 			Irgb <= 24'h00f0f0;
 		end else begin
 			Irgb <= 24'hff0000;
