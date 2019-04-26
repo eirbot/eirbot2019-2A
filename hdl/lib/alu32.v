@@ -14,8 +14,8 @@
 `define MUL 8'h03
 
 module alu32 #(
-	parameter addsuber = 1'b1,
-	parameter multiplier = 1'b1
+	parameter addsuber = 1,
+	parameter multiplier = 1
 )(
 	input clk,
 	input rst,
