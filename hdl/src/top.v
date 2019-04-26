@@ -119,7 +119,7 @@ wire [31:0] a1;
 wire [31:0] b1;
 
 keymux #(
-	.ninputs(1)
+	.ninputs(2)
 ) m_keymux (
 	.clk(clk),
 	.rst(rst),
