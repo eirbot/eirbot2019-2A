@@ -7,8 +7,8 @@
 
 // Left qei
 #define ENCODER_TIM_LEFT TIM3
-#define GREEN_L PA_7
-#define YELLOW_L PA_6
+#define GREEN_L PC_7
+#define YELLOW_L PC_6
 // Right qei
 #define ENCODER_TIM_RIGHT TIM4
 #define YELLOW_R PB_7
