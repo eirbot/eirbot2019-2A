@@ -12,6 +12,7 @@
 `include "lib/rgb.v"
 `include "lib/alu32.v"
 `include "lib/keymux.v"
+`include "lib/speedblock.v"
 
 module top(
 	// Global inputs
@@ -58,54 +59,6 @@ rgb #(
 	.ledR(ledR),
 	.ledG(ledG),
 	.ledB(ledB)
-);
-
-pwm #(
-	.freq(`PWM_FREQ),
-	.nbits(`PWM_RES)
-) m_pwmL (
-	.clk(clk),
-	.rst(rst),
-	.en(1'b1),
-	.in(10'd2**9),
-	.out(pwmL)
-);
-
-// PWM
-pwm #(
-	.freq(`PWM_FREQ),
-	.nbits(`PWM_RES)
-) m_pwmR (
-	.clk(clk),
-	.rst(rst),
-	.en(1'b1),
-	.in(10'd2**9),
-	.out(pwmR)
-);
-
-// QEI
-qei #(
-	.nbits(`QEI_RES)
-) m_qeiL (
-	.clk(clk),
-	.rst(rst),
-	.clr(1'b0),
-	.en(1'b1),
-	.in_A(qeiL_A),
-	.in_B(qeiL_B),
-	.val(qeiL)
-);
-
-qei #(
-	.nbits(`QEI_RES)
-) m_qeiR (
-	.clk(clk),
-	.rst(rst),
-	.clr(1'b0),
-	.en(1'b1),
-	.in_A(qeiR_A),
-	.in_B(qeiR_B),
-	.val(qeiR)
 );
 
 `define INA 32'hffc6b000
@@ -165,7 +118,7 @@ always @(posedge clk) begin
 	end else if (key2 == 8'h05 && aluO == 32'hff9b8800) begin
 			Irgb <= 24'h000800;
 	end else if (key2 == 8'h04 && aluO == 32'h09a96480) begin
-			Irgb <= 24'h00f0f0;
+			Irgb <= 24'h000080;
 	end else if (key2 != 8'h00) begin
 		Irgb <= 24'hff0000;
 	end else begin
