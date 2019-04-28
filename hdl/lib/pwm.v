@@ -17,13 +17,13 @@ module pwm #(
 	input clk,
 	input rst,
 	input en,
-	input [nbits-1:0] in,
-	output reg out
+	input [nbits-1:0] pwm_i,
+	output reg pwm_o
 );
 
 localparam nbits_pwm = nbits;
 localparam max_pwm = 2**nbits_pwm-1;
-localparam max_clk_divider = $rtoi($floor(48000000/(freq*(2**nbits_pwm)))-1);
+localparam max_clk_divider = $rtoi($floor(`CLK_FREQ/(freq*(2**nbits_pwm)))-1);
 localparam nbits_clk_divider = $clog2(max_clk_divider+1);
 
 wire counter_en;
@@ -61,9 +61,9 @@ generate
 
 		always @(posedge clk) begin
 			if (rst || !en) begin
-				out <= 0;
+				pwm_o <= 0;
 			end else begin
-				out <= (count<in) ? 1'b1 : 1'b0;
+				pwm_o <= (count < pwm_i) ? 1'b1 : 1'b0;
 			end
 		end
 

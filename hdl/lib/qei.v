@@ -16,32 +16,32 @@ module qei #(
 	input rst,
 	input clr,
 	input en,
-	input in_A,
-	input in_B,
-	output reg [nbits-1:0] val
+	input A_i,
+	input B_i,
+	output reg [nbits-1:0] qei_o
 );
 
-reg prev_A;
-reg prev_B;
+reg A_buff;
+reg B_buff;
 
 always @(posedge clk) begin
 	if (rst || clr) begin
-		val <= 0;
+		qei_o <= 0;
 	end else if (en) begin
-		val <=	(in_A != prev_A) &&  in_A && (in_B == prev_B) && !in_B ? val+1 :
-				(in_A == prev_A) &&  in_A && (in_B != prev_B) &&  in_B ? val+1 :
-				(in_A != prev_A) && !in_A && (in_B == prev_B) &&  in_B ? val+1 :
-				(in_A == prev_A) && !in_A && (in_B != prev_B) && !in_B ? val+1 :
+		qei_o <= (A_i != A_buff) &&  A_i && (B_i == B_buff) && !B_i ? qei_o+1 :
+				(A_i == A_buff) &&  A_i && (B_i != B_buff) &&  B_i ? qei_o+1 :
+				(A_i != A_buff) && !A_i && (B_i == B_buff) &&  B_i ? qei_o+1 :
+				(A_i == A_buff) && !A_i && (B_i != B_buff) && !B_i ? qei_o+1 :
 
-				(in_A != prev_A) &&  in_A && (in_B == prev_B) &&  in_B ? val-1 :
-				(in_A == prev_A) &&  in_A && (in_B != prev_B) && !in_B ? val-1 :
-				(in_A != prev_A) && !in_A && (in_B == prev_B) && !in_B ? val-1 :
-				(in_A == prev_A) && !in_A && (in_B != prev_B) &&  in_B ? val-1 :
+				(A_i != A_buff) &&  A_i && (B_i == B_buff) &&  B_i ? qei_o-1 :
+				(A_i == A_buff) &&  A_i && (B_i != B_buff) && !B_i ? qei_o-1 :
+				(A_i != A_buff) && !A_i && (B_i == B_buff) && !B_i ? qei_o-1 :
+				(A_i == A_buff) && !A_i && (B_i != B_buff) &&  B_i ? qei_o-1 :
 
-				val;
+				qei_o;
 	end
-	prev_A <= in_A;
-	prev_B <= in_B;
+	A_buff <= A_i;
+	B_buff <= B_i;
 end
 
 endmodule
