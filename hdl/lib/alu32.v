@@ -1,7 +1,7 @@
 /*
  * ALU module
  * TODO
- * Pretty much everything
+ * Documentation, merge other operations
  */
 
 `ifndef ALU_V
@@ -21,12 +21,12 @@ module alu32 #(
 	input rst,
 	input clr,
 	input en,
-	input [7:0] op,
 	input [7:0] key_in,
+	input [7:0] op,
 	input [31:0] inA,
 	input [31:0] inB,
-	output reg [31:0] out,
-	output reg [7:0] key_out
+	output reg [7:0] key_out,
+	output reg [31:0] out
 );
 
 
@@ -166,7 +166,7 @@ generate
 			key_out <= 8'h00;
 			state <= 2'b00;
 			buff_mul <= 32'h00000000;
-		end else if (en) begin
+		end else if (en && key_out != key_in) begin
 			if (op == `ADD && addsuber) begin
 				out <= addsubO;
 				key_out <= key_in;
