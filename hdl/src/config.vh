@@ -19,4 +19,13 @@
 // QEI parameters
 `define QEI_RES 16
 
+// ALU parameters
+`define KEY_SIZE 4
+`define OPCODE_SIZE 4
+`define OPERAND_SIZE 32
+`define NULLOP `OPCODE_SIZE'h0
+`define ADD `OPCODE_SIZE'h1
+`define SUB `OPCODE_SIZE'h2
+`define MUL `OPCODE_SIZE'h3
+
 `endif

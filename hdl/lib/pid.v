@@ -22,15 +22,16 @@ module pid #(
 	input [nbits-1:0] pv_i,
 	output reg [nbits-1:0] co_o,
 	// ALU ports
-	input [nbits-1:0] alu_key_i,
-	input [7:0] alu_O_i,
-	output reg [7:0] alu_key_o,
-	output reg [7:0] alu_op_o,
+	input [`KEY_SIZE-1:0] alu_key_i,
+	input [nbits-1:0] alu_O_i,
+	output reg [`KEY_SIZE-1:0] alu_key_o,
+	output reg [`OPCODE_SIZE-1:0] alu_op_o,
 	output reg [nbits-1:0] alu_A_o,
 	output reg [nbits-1:0] alu_B_o
 );
 
 always @(posedge clk) begin
+	co_o <= {nbits{0}};
 end
 
 endmodule

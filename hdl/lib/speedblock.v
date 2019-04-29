@@ -28,20 +28,20 @@ module speedblock #(
 	// Inputs
 	input [pid_res-1:0] speedL_i,
 	input [pid_res-1:0] speedR_i,
-	input [qei_res-1:0] qeiLA_i,
-	input [qei_res-1:0] qeiLB_i,
-	input [qei_res-1:0] qeiRA_i,
-	input [qei_res-1:0] qeiRB_i,
+	input qeiLA_i,
+	input qeiLB_i,
+	input qeiRA_i,
+	input qeiRB_i,
 	// Outputs
 	output pwmL_o,
 	output pwmR_o,
 	// ALU connections
-	input [2*7-1:0] alu_key_i,
-	input [2*32-1:0] alu_O_i,
-	output [2*7-1:0] alu_op_o,
-	output [2*7-1:0] alu_key_o,
-	output [2*32-1:0] alu_A_o,
-	output [2*32-1:0] alu_B_o
+	input [2*`KEY_SIZE-1:0] alu_key_i,
+	input [2*`OPERAND_SIZE-1:0] alu_O_i,
+	output [2*`KEY_SIZE-1:0] alu_key_o,
+	output [2*`OPCODE_SIZE-1:0] alu_op_o,
+	output [2*`OPERAND_SIZE-1:0] alu_A_o,
+	output [2*`OPERAND_SIZE-1:0] alu_B_o
 );
 
 /* PID signals */
@@ -62,19 +62,19 @@ wire [qei_res-1:0] qeiR_o;
 
 /* ALU connections */
 // For pidL
-wire [7:0] pidL_key_o;
-wire [7:0] pidL_op_o;
-wire [31:0] pidL_A_o;
-wire [31:0] pidL_B_o;
-wire [7:0] pidL_key_i;
-wire [31:0] pidL_O_i;
+wire [`KEY_SIZE-1:0] pidL_key_o;
+wire [`OPCODE_SIZE-1:0] pidL_op_o;
+wire [`OPERAND_SIZE-1:0] pidL_A_o;
+wire [`OPERAND_SIZE-1:0] pidL_B_o;
+wire [`KEY_SIZE-1:0] pidL_key_i;
+wire [`OPERAND_SIZE-1:0] pidL_O_i;
 // For pidR
-wire [7:0] pidR_key_o;
-wire [7:0] pidR_op_o;
-wire [31:0] pidR_A_o;
-wire [31:0] pidR_B_o;
-wire [7:0] pidR_key_i;
-wire [31:0] pidR_O_i;
+wire [`KEY_SIZE-1:0] pidR_key_o;
+wire [`OPCODE_SIZE-1:0] pidR_op_o;
+wire [`OPERAND_SIZE-1:0] pidR_A_o;
+wire [`OPERAND_SIZE-1:0] pidR_B_o;
+wire [`KEY_SIZE-1:0] pidR_key_i;
+wire [`OPERAND_SIZE-1:0] pidR_O_i;
 // For speedblock pors
 assign alu_key_i = {pidL_key_i, pidR_key_i};
 assign alu_O_i = {pidL_O_i, pidR_O_i};

@@ -14,18 +14,18 @@ module keymux #(
 )(
 	input clk,
 	input rst,
-	input [8*ninputs-1:0] op_i,
-	input [8*ninputs-1:0] key_i,
-	input [32*ninputs-1:0] A_i,
-	input [32*ninputs-1:0] B_i,
-	input [7:0] keyback_i,
-	output reg [7:0] op_o,
-	output reg [7:0] key_o,
-	output reg [31:0] A_o,
-	output reg [31:0] B_o
+	input [ninputs*`OPCODE_SIZE-1:0] op_i,
+	input [ninputs*`KEY_SIZE-1:0] key_i,
+	input [ninputs*`OPERAND_SIZE-1:0] A_i,
+	input [ninputs*`OPERAND_SIZE-1:0] B_i,
+	input [`KEY_SIZE-1:0] keyback_i,
+	output reg [`OPCODE_SIZE-1:0] op_o,
+	output reg [`KEY_SIZE-1:0] key_o,
+	output reg [`OPERAND_SIZE-1:0] A_o,
+	output reg [`OPERAND_SIZE-1:0] B_o
 );
 
-reg [8*ninputs-1:0] key_buff;
+reg [ninputs*`KEY_SIZE-1:0] key_buff;
 
 generate
 	if (ninputs) begin
@@ -35,13 +35,14 @@ generate
 				key_buff <= {ninputs{8'h00}};
 			end else begin
 				for (i = 0; i < ninputs; i++) begin
-					if ((key_i[8*(i+1)-1:8*i] != key_buff[8*(i+1)-1:8*i])
+					if ((key_i[`KEY_SIZE*(i+1)-1:`KEY_SIZE*i]
+							!= key_buff[`KEY_SIZE*(i+1)-1:`KEY_SIZE*i])
 							&& keyback_i == key_o) begin
-						op_o <= op_i[8*(i+1)-1:8*i];
-						key_o <= key_i[8*(i+1)-1:8*i];
+						op_o <= op_i[`OPCODE_SIZE*(i+1)-1:`OPCODE_SIZE*i];
+						key_o <= key_i[`KEY_SIZE*(i+1)-1:`KEY_SIZE*i];
 						A_o <= A_i[32*(i+1)-1:32*i];
 						B_o <= B_i[32*(i+1)-1:32*i];
-						key_buff[8*(i+1)-1:8*i] <= key_i[8*(i+1)-1:8*i];
+						key_buff[`KEY_SIZE*(i+1)-1:`KEY_SIZE*i] <= key_i[`KEY_SIZE*(i+1)-1:`KEY_SIZE*i];
 					end
 				end
 			end

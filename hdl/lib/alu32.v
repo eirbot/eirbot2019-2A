@@ -9,10 +9,6 @@
 
 `include "src/config.vh"
 
-`define ADD 8'h01
-`define SUB 8'h02
-`define MUL 8'h03
-
 module alu32 #(
 	parameter addsuber = 1,
 	parameter multiplier = 1
@@ -21,12 +17,12 @@ module alu32 #(
 	input rst,
 	input clr,
 	input en,
-	input [7:0] key_in,
-	input [7:0] op,
-	input [31:0] inA,
-	input [31:0] inB,
-	output reg [7:0] key_out,
-	output reg [31:0] out
+	input [`KEY_SIZE-1:0] key_in,
+	input [`OPCODE_SIZE-1:0] op,
+	input [`OPERAND_SIZE-1:0] inA,
+	input [`OPERAND_SIZE-1:0] inB,
+	output reg [`KEY_SIZE-1:0] key_out,
+	output reg [`OPERAND_SIZE-1:0] out
 );
 
 

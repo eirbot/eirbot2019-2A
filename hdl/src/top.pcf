@@ -2,16 +2,16 @@
 set_io rst 23
 
 # RGB LED
-set_io ledG 39
-set_io ledB 40
-set_io ledR 41
+set_io G_o 39
+set_io B_o 40
+set_io R_o 41
 
 # PWM
-set_io pwmL 28
-set_io pwmR 46
+set_io pwmL_o 28
+set_io pwmR_o 46
 
 # QEI
-set_io qeiL_A 37
-set_io qeiL_B 31
-set_io qeiR_A 35
-set_io qeiR_B 32
+set_io qeiLA_i 37
+set_io qeiLB_i 31
+set_io qeiRA_i 35
+set_io qeiRB_i 32
