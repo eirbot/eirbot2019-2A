@@ -245,5 +245,17 @@ void square(Serial* const ser, SpeedBlock* const speed_block)
 
 void test_odometry(Serial*const ser, Odometry* const odometry)
 {
-	int x, y, z;
+	float x = 0;
+	float y = 0;
+	float a = 0;
+	odometry->reset();
+	odometry->start();
+	ser->printf("starting odometry test...\n\r");
+	ser->printf("pattern:\n\rx\t\ty\t\ta\t\tx(m)\t\ty(m)\t\ta(pi.rad)\n\r");
+	ser->getc();
+	while (!ser->readable()) {
+		odometry->getPos(&x, &y, &a);
+		ser->printf("%8f\t%8f\t%8f\t%8f\t%8f\t%f\r", x, y, a, x/TICKS_PM, y/TICKS_PM, a/TICKS_PRAD/PI);
+	}
+	odometry->reset();
 }

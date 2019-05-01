@@ -9,11 +9,12 @@
 const float ticks_per_meter = 43723.0f;
 const float eps = 0.318f*ticks_per_meter;
 
-#define PERIOD_ODOMETRY 0.0001f
+#define PERIOD_ODOMETRY 0.001f
 
 #define PI 3.14159f
 #define TWOPI 6.28319f
-#define TICKS_PM 22430.0f
+#define TICKS_PM 44860.0f
+#define TICKS_PRAD 6654.0f
 #define EPS (TICKS_PM*0.298f)
 
 class Odometry

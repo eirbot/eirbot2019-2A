@@ -41,7 +41,6 @@ void Odometry::getPos(float* const _x, float* _y, float* _a)
 	*_a = a;
 }
 
-
 void Odometry::setPos(float* _x, float* _y, float* _a)
 {
 	x = *_x;
@@ -51,20 +50,13 @@ void Odometry::setPos(float* _x, float* _y, float* _a)
 
 void Odometry::refresh()
 {
-	//float dl = (float)block_l.getQei(qei_l);
-	//float dr = (float)block_r.getQei(qei_r);
-	float dl = 0.0f;
-	float dr = 0.0f;
-	float angle = (dr-dl)/EPS;
-	float dx = (dl+dr)/2.0f;
-	float dy = 0.0f;
-	if (abs(angle) > 0.0000175f) {
-		float radius = (dl+dr)/2.0f/angle;
-		dx = radius*sin(angle);
-		dy = radius*(1.0f-cos(angle));
-	}
-	x += cos(a)*dx - sin(a)*dy;
-	y += sin(a)*dx + cos(a)*dy;
-	a += angle;
-	if (abs(a) > PI) a -= sg(a)*TWOPI;
+	float dleft = (float)qei_l->getQei(&qei_l_val);
+	float dright = (float)qei_r->getQei(&qei_r_val);
+	float dr = (dleft+dright)/2.0f;
+	float da = (dright-dleft)/2.0f;
+	a += da/2;
+	x += cos(a/TICKS_PRAD)*dr;
+	y += sin(a/TICKS_PRAD)*dr;
+	a += da/2;
+	if (abs(a) > PI*TICKS_PRAD) a -= sg(a)*TWOPI*TICKS_PRAD;
 }
