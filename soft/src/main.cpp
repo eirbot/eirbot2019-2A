@@ -5,6 +5,7 @@
 #include <lmd18200.hpp>
 #include <speed_block.hpp>
 #include <odometry.hpp>
+#include <navigator.hpp>
 
 #ifdef DEBUG
 #include <debug.hpp>
@@ -33,6 +34,7 @@ LMD18200 motor_l(PWM_L, DIR_L, BREAK_L, DIR_FWD_L, PERIOD_PWM);
 LMD18200 motor_r(PWM_R, DIR_R, BREAK_R, DIR_FWD_R, PERIOD_PWM);
 SpeedBlock speed_block(&qei_l, &pid_l, &motor_l, &qei_r, &pid_r, &motor_r);
 Odometry odometry(&qei_l, &qei_r);
+Navigator navigator(&odometry, &speed_block);
 
 
 int main()
@@ -65,6 +67,12 @@ int main()
 #endif
 #ifdef ODOMETRY
 	test_odometry(&ser, &odometry);
+#endif
+#ifdef NAVIGATOR
+	test_navigator(&ser, &navigator, &odometry);
+#endif
+#ifdef STRAT
+	test_strat(&ser, &navigator, &odometry);
 #endif
 #endif
 	speed_block.reset();

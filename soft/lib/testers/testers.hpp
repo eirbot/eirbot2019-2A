@@ -7,6 +7,7 @@
 #include <lmd18200.hpp>
 #include <speed_block.hpp>
 #include <odometry.hpp>
+#include <navigator.hpp>
 
 #define LENGTH_TEST 5.0f
 void length_calibration(Serial* const ser, Qei* const qei_l, Qei* const qei_r);
@@ -29,7 +30,13 @@ void pid_test(Serial* const ser, SpeedBlock* const speed_block);
 void speed_test(Serial* const ser, SpeedBlock* const speed_block);
 void square(Serial* const ser, SpeedBlock* const speed_block);
 
-void test_odometry(Serial*const ser, Odometry* const odometry);
+void test_odometry(Serial* const ser, Odometry* const odometry);
+
+void test_navigator(Serial* const ser, Navigator* const navigator,
+		Odometry* const odometry);
+
+void test_strat(Serial* const ser, Navigator* const navigator,
+		Odometry* const odometry);
 
 
 #endif

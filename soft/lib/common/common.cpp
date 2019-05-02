@@ -31,6 +31,11 @@ float limit(float const val, float const v_min, float const v_max)
 	return max(min(val, v_max), v_min);
 }
 
+bool isNan(float const val)
+{
+	return (!(val<CONST_NAN || val>CONST_NAN || val==CONST_NAN));
+}
+
 void blink(DigitalOut* const led) {
 	*led = !*led;
 }

@@ -41,11 +41,11 @@ void Odometry::getPos(float* const _x, float* _y, float* _a)
 	*_a = a;
 }
 
-void Odometry::setPos(float* _x, float* _y, float* _a)
+void Odometry::setPos(float _x, float _y, float _a)
 {
-	x = *_x;
-	y = *_y;
-	a = *_a;
+	x = _x;
+	y = _y;
+	a = _a;
 }
 
 void Odometry::refresh()

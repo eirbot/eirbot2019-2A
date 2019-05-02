@@ -1,6 +1,6 @@
 
-#ifndef NAVIGATOR_HPP
-#define NAVIGATOR_HPP
+#ifndef ODOMETRY_HPP
+#define ODOMETRY_HPP
 
 #include <mbed.h>
 #include <common.hpp>
@@ -25,7 +25,7 @@ public:
 	void reset();
 	void start();
 	void getPos(float* const _x, float* const _y, float* const _a);
-	void setPos(float* const _x, float* const _y, float* const _a);
+	void setPos(float const _x, float const _y, float const _a);
 private:
 	void refresh();
 	float x;

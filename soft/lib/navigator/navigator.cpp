@@ -7,205 +7,71 @@
 #include "navigator.hpp"
 
 
-Navigator::Navigator(Block& _block_l, Block& _block_r, Gp2Group& _front_gp2,
-		Gp2Group& _back_gp2, float _period, float _period_pos):
-	pos(),
-	dst(),
-	block_l(_block_l),
-	block_r(_block_r),
-	front_gp2(_front_gp2),
-	back_gp2(_back_gp2)
+Navigator::Navigator(Odometry* _odometry, SpeedBlock* _speed_block):
+	odometry(_odometry),
+	speed_block(_speed_block)
 {
-	color = 0;
-	status = -1;
-	obstacle = 0;
-	check_obs = 1;
-	qei_l = 0;
-	qei_r = 0;
-	period = _period;
-	period_pos = _period_pos;
+	reset();
 }
 
 Navigator::~Navigator()
 {
-	
 }
 
-void Navigator::Reset()
+void Navigator::reset()
 {
 	ticker.detach();
-	ticker_pos.detach();
-	block_l.Reset();
-	block_r.Reset();
-	qei_l = 0;
-	qei_r = 0;
+	odometry->reset();
+	speed_block->reset();
 }
 
-void Navigator::Start()
+void Navigator::start()
 {
-	block_l.Start();
-	block_r.Start();
-	ticker.attach(callback(this, &Navigator::Refresh), period);
-	ticker_pos.attach(callback(this, &Navigator::RefreshPos), period_pos);
+	odometry->start();
+	speed_block->start();
+	ticker.attach(callback(this, &Navigator::refresh), PERIOD_POS);
 }
 
-void Navigator::Pause()
+void Navigator::setDst(float const _x, float const _y, float const _a)
 {
-	ticker.detach();
-	block_l.Pause();
-	block_r.Pause();
-	qei_l = 0;
-	qei_r = 0;
+	x = _x;
+	y = _y;
+	a = (abs(_a) > PI*TICKS_PRAD) ? _a - sg(_a)*TWOPI*TICKS_PRAD : _a;
+	ready_val = false;
 }
 
-void Navigator::Unpause()
+bool Navigator::ready()
 {
-	ticker.attach(callback(this, &Navigator::Refresh), period);
+	return ready_val;
 }
 
-Pos Navigator::GetPos()
+void Navigator::refresh()
 {
-	return pos;
-}
-
-Pos Navigator::GetDst()
-{
-	return dst;
-}
-
-void Navigator::SetPos(Pos _pos)
-{
-
-}
-
-void Navigator::SetDst(Pos _dst)
-{
-	dst.x = _dst.x;
-	dst.y = _dst.y;
-	dst.angle = _dst.angle;
-}
-
-bool Navigator::IsReady()
-{
-	return (status == 0);
-}
-
-void Navigator::Refresh()
-{
-	unsigned char status = 0;
-	float dx = dst.x - pos.x;
-	float dy = dst.y - pos.y;
-	// Dist error
-	float err_d = sqrtf(dx*dx + dy*dy);
-	// Angle error to go to dst
-	float err_a = 2.0f * atan(dy/(dx+err_d)) - pos.angle;
-	// Dst angle error
-	float err_ad = dst.angle - pos.angle;
-	float dist_l = 0.0f;
-	float dist_r = 0.0f;
-	if (abs(err_d) > th_dd) {
-		// Corrrect angle to go to dst
-		if ((abs(err_a) > th_a_mov && status == 1) ||
-				(abs(err_a) > th_a)) {
-			status = 1;
-			dist_l = -err_a*eps/2.0f;
-			dist_r = -dist_l;
-		}
-		// Arc to go to dst for little angles
-		/*
-		else if ((abs(err_a) > th_a_mov && status == 2) ||
-				(abs(err_a) > th_a_mov)) {
-			status = 2;
-			float rad = err_d/2.0f/sin(err_a);
-			dist_l = (rad-sg(err_a)*eps/2.0f)/2.0f/err_a;
-			dist_r = (rad+sg(err_a)*eps/2.0f)/2.0f/err_a;
-			float ratio = dist_l/dist_r;
-		}
-		*/
-		// Straight line backward to go to dst
-		// /*
-		else if (abs(err_a) > th_ab) {
-			status = 3;
-			dist_l = -err_d;
-			dist_r = -err_d;
-		}
-		// */
-		// Straight line forward to go to dst
-		else {
-			status = 4;
-			dist_l = err_d;
-			dist_r = err_d;
+	float x_pos;
+	float y_pos;
+	float a_pos;
+	odometry->getPos(&x_pos, &y_pos, &a_pos);
+	float dx = x - x_pos;
+	float dy = y - y_pos;
+	float r = sqrtf(pow(dx, 2) + pow(dy, 2));
+	ready_val = false;
+	float t = isNan(a) ? 0.0f : a - a_pos;
+	if (abs(r) > THRESH_DIST) {
+		t = TICKS_PRAD * atan2(dy, dx) - a_pos;
+		t = (abs(t) > PI*TICKS_PRAD) ? t - sg(t)*TWOPI*TICKS_PRAD : t;
+		if (abs(t) > PI/2*TICKS_PRAD) {
+			t = t - sg(t)*PI*TICKS_PRAD;
+			r = -r;
 		}
 	} else {
-		// Straight line backward to go to dst
-		/*
-		if ((abs(err_a) > th_ab) ||
-				(abs(err_d) > th_dd_mov && status == 4)) {
-			status = 4;
-			dist_l = err_d;
-			dist_r = err_d;
+		t = (abs(t) > PI*TICKS_PRAD) ? t - sg(t)*TWOPI*TICKS_PRAD : t;
+		if (abs(t) < THRESH_ANGLE) {
+			t = 0.0f;
+			ready_val = true;
 		}
-		*/
-		// Straight line forward to go to dst
-		if (abs(err_d) > th_dd_mov && status == 4) {
-			status = 4;
-			dist_l = err_d;
-			dist_r = err_d;
-		}
-		// Correct angle to final one
-		else if ((abs(err_ad) > th_ad_mov && status == 5) ||
-				(abs(err_ad) > th_ad)) {
-			status = 5;
-			dist_l = -err_ad * eps/2.0f;
-			dist_r = -dist_l;
-		}
-		// No deplacement
-		else {
-			status = 0;
-			dist_l = 0.0f;
-			dist_r = 0.0f;
-		}
+		r = 0.0f;
 	}
-	float speed_l = ComputeSpeed(period, block_l.GetSP(), dist_l, vmax,
-				amax_up_t, amax_down_t);
-	float speed_r = ComputeSpeed(period, block_l.GetSP(), dist_r, vmax,
-				amax_up_t, amax_down_t);
-	
-	if (check_obs && FrontObstacle()) {
-		speed_l = 0.0f;
-		speed_r = 0.0f;
-	}
-
-	block_l.SetSpeed(speed_l);
-	block_r.SetSpeed(speed_r);
-	block_l.Refresh();
-	block_r.Refresh();
-}
-
-void Navigator::RefreshPos()
-{
-	float dl = (float)block_l.GetQei(qei_l);
-	float dr = (float)block_r.GetQei(qei_r);
-	float angle = (dr-dl)/eps;
-	float dx = (dl+dr)/2.0f;
-	float dy = 0.0f;
-	if (abs(angle) > 0.0000175f) {
-		float radius = (dl+dr)/2.0f/angle;
-		dx = radius*sin(angle);
-		dy = radius*(1.0f-cos(angle));
-	}
-	pos.x += cos(pos.angle)*dx - sin(pos.angle)*dy;
-	pos.y += sin(pos.angle)*dx + cos(pos.angle)*dy;
-	pos.angle += angle;
-	if (abs(pos.angle) > PI) pos.angle -= sg(pos.angle)*TWOPI;
-}
-
-bool Navigator::FrontObstacle()
-{
-	return front_gp2.Obstacle(!color, 1, 1, color);
-}
-
-bool Navigator::BackObstacle()
-{
-	return back_gp2.Obstacle(1, 1, 1, 1);
+	r = sg(r)*min(A_DIST*abs(r), 50);
+	t = sg(t)*min(A_ANGLE*abs(t), 50);
+	speed_block->setSpeed(r-t, r+t);
 }

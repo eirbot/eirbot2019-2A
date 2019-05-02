@@ -243,19 +243,88 @@ void square(Serial* const ser, SpeedBlock* const speed_block)
 	speed_block->reset();
 }
 
-void test_odometry(Serial*const ser, Odometry* const odometry)
+void test_odometry(Serial* const ser, Odometry* const odometry)
 {
 	float x = 0;
 	float y = 0;
 	float a = 0;
 	odometry->reset();
-	odometry->start();
 	ser->printf("starting odometry test...\n\r");
 	ser->printf("pattern:\n\rx\t\ty\t\ta\t\tx(m)\t\ty(m)\t\ta(pi.rad)\n\r");
 	ser->getc();
+	odometry->start();
 	while (!ser->readable()) {
 		odometry->getPos(&x, &y, &a);
 		ser->printf("%8f\t%8f\t%8f\t%8f\t%8f\t%f\r", x, y, a, x/TICKS_PM, y/TICKS_PM, a/TICKS_PRAD/PI);
 	}
 	odometry->reset();
+}
+
+void test_navigator(Serial* const ser, Navigator* const navigator,
+		Odometry* const odometry)
+{
+	float x = 0;
+	float y = 0;
+	float a = 0;
+	navigator->reset();
+	ser->printf("starting odometry test...\n\r");
+	ser->printf("pattern:\n\rx\t\ty\t\ta\t\tx(m)\t\ty(m)\t\ta(pi.rad)\n\r");
+	navigator->setDst(0.5f*TICKS_PM, 0.5f*TICKS_PM, PI/2*TICKS_PRAD);
+	ser->getc();
+	odometry->start();
+	navigator->start();
+	while (!ser->readable()) {
+		odometry->getPos(&x, &y, &a);
+		ser->printf("%8f\t%8f\t%8f\t%8f\t%8f\t%f\r", x, y, a, x/TICKS_PM, y/TICKS_PM, a/TICKS_PRAD/PI);
+	}
+	odometry->reset();
+}
+
+void test_strat(Serial* const ser, Navigator* const navigator,
+		Odometry* const odometry)
+{
+	float x = 0;
+	float y = 0;
+	float a = 0;
+	navigator->reset();
+	odometry->setPos(1.03f*TICKS_PM, 1.31*TICKS_PM, -PI/2*TICKS_PRAD);
+	odometry->getPos(&x, &y, &a);
+	ser->printf("starting strat test...\n\r");
+	ser->printf("pattern:\n\rx(m)\t\ty(m)\t\ta(pi.rad)\n\r");
+	ser->getc();
+	navigator->start();
+
+	float x_dst[] = {1.05f*TICKS_PM,	// Front puck
+					0.75f*TICKS_PM,		// Second puck
+					0.58f*TICKS_PM,		// Red area
+					1.35f*TICKS_PM,		// Go back
+					1.05f*TICKS_PM,		// Take storm puck
+					0.58f*TICKS_PM,		// Red area
+					};
+	float y_dst[] = {1.03f*TICKS_PM,
+					1.03f*TICKS_PM,
+					1.31f*TICKS_PM,
+					0.90f*TICKS_PM,
+					0.50f*TICKS_PM,
+					1.31f*TICKS_PM,
+					};
+	float a_dst[] = {PI*TICKS_PRAD,
+					5*PI/6*TICKS_PRAD,
+					NAN,
+					-PI/2*TICKS_PRAD,
+					2*PI/3*TICKS_PRAD,
+					NAN,
+					};
+	int len = 6;
+
+	for (int i = 0; i < len; i++) {
+		navigator->setDst(x_dst[i], y_dst[i], a_dst[i]);
+		while (!navigator->ready() && !ser->readable()) {
+			odometry->getPos(&x, &y, &a);
+			ser->printf("%8f\t%8f\t%f\r", x/TICKS_PM,
+					y/TICKS_PM, a/TICKS_PRAD/PI);
+		}
+	}
+
+	navigator->reset();
 }
