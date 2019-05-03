@@ -294,28 +294,73 @@ void test_strat(Serial* const ser, Navigator* const navigator,
 	ser->getc();
 	navigator->start();
 
-	float x_dst[] = {1.05f*TICKS_PM,	// Front puck
-					0.75f*TICKS_PM,		// Second puck
-					0.58f*TICKS_PM,		// Red area
-					1.35f*TICKS_PM,		// Go back
-					1.05f*TICKS_PM,		// Take storm puck
-					0.58f*TICKS_PM,		// Red area
-					};
-	float y_dst[] = {1.03f*TICKS_PM,
+	float x_dst[] = {1.10f*TICKS_PM,
+					0.85f*TICKS_PM,
+					0.58f*TICKS_PM,
+					0.69f*TICKS_PM,
+					0.45f*TICKS_PM,
+					0.44f*TICKS_PM,
+					0.79f*TICKS_PM,
+					1.37f*TICKS_PM,
+					0.51f*TICKS_PM,
+					1.38f*TICKS_PM,
 					1.03f*TICKS_PM,
-					1.31f*TICKS_PM,
-					0.90f*TICKS_PM,
-					0.50f*TICKS_PM,
-					1.31f*TICKS_PM,
+					0.51f*TICKS_PM,
+					0.51f*TICKS_PM,
+					0.66f*TICKS_PM,
+					0.28f*TICKS_PM,
+					0.28f*TICKS_PM,
+					0.42f*TICKS_PM,
+					0.32f*TICKS_PM,
+					0.42f*TICKS_PM,
+					1.28f*TICKS_PM,
+					1.44f*TICKS_PM,
 					};
-	float a_dst[] = {PI*TICKS_PRAD,
-					5*PI/6*TICKS_PRAD,
-					NAN,
-					-PI/2*TICKS_PRAD,
-					2*PI/3*TICKS_PRAD,
-					NAN,
+	float y_dst[] = {0.85f*TICKS_PM,
+					0.95f*TICKS_PM,
+					1.32f*TICKS_PM,
+					0.95f*TICKS_PM,
+					0.95f*TICKS_PM,
+					1.30f*TICKS_PM,
+					0.15f*TICKS_PM,
+					0.29f*TICKS_PM,
+					1.17f*TICKS_PM,
+					0.24f*TICKS_PM,
+					0.22f*TICKS_PM,
+					0.73f*TICKS_PM,
+					1.13f*TICKS_PM,
+					0.75f*TICKS_PM,
+					-0.13f*TICKS_PM,
+					-0.27f*TICKS_PM,
+					-0.77f*TICKS_PM,
+					-0.75f*TICKS_PM,
+					-0.75f*TICKS_PM,
+					0.23f*TICKS_PM,
+					0.19f*TICKS_PM,
 					};
-	int len = 6;
+	float a_dst[] = {0.86f*PI*TICKS_PRAD,
+					NAN, //0.84f*PI*TICKS_PRAD,
+					NAN, //0.67f*PI*TICKS_PRAD,
+					-0.96f*PI*TICKS_PRAD,
+					0.54f*PI*TICKS_PRAD,
+					NAN, //0.53f*PI*TICKS_PRAD,
+					0.06f*PI*TICKS_PRAD,
+					0.77f*PI*TICKS_PRAD,
+					NAN, //0.75f*PI*TICKS_PRAD,
+					-0.97f*PI*TICKS_PRAD,
+					0.63f*PI*TICKS_PRAD,
+					NAN, //0.52f*PI*TICKS_PRAD,
+					NAN, //0.52f*PI*TICKS_PRAD,
+					NAN, //0.36f*PI*TICKS_PRAD,
+					0.50f*PI*TICKS_PRAD,
+					NAN, //0.50f*PI*TICKS_PRAD,
+					1.00f*PI*TICKS_PRAD,
+					1.00f*PI*TICKS_PRAD,
+					0.29f*PI*TICKS_PRAD,
+					-0.06f*PI*TICKS_PRAD,
+					-0.06f*PI*TICKS_PRAD,
+					};
+	int len = 21;
 
 	for (int i = 0; i < len; i++) {
 		navigator->setDst(x_dst[i], y_dst[i], a_dst[i]);
@@ -325,6 +370,11 @@ void test_strat(Serial* const ser, Navigator* const navigator,
 					y/TICKS_PM, a/TICKS_PRAD/PI);
 		}
 	}
-
 	navigator->reset();
+	ser->getc();
+	while (!ser->readable()) {
+		odometry->getPos(&x, &y, &a);
+		ser->printf("%8f\t%8f\t%f\r", x/TICKS_PM,
+				y/TICKS_PM, a/TICKS_PRAD/PI);
+	}
 }

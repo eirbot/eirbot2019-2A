@@ -71,7 +71,7 @@ void Navigator::refresh()
 		}
 		r = 0.0f;
 	}
-	r = sg(r)*min(A_DIST*abs(r), 50);
-	t = sg(t)*min(A_ANGLE*abs(t), 50);
+	r = sg(r)*min(A_DIST*abs(r), CEIL_DIST);
+	t = sg(t)*min(A_ANGLE*abs(t), CEIL_ANGLE);
 	speed_block->setSpeed(r-t, r+t);
 }

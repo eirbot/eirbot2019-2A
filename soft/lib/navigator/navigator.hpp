@@ -16,6 +16,9 @@
 #define THRESH_DIST (0.01f*TICKS_PM)
 #define THRESH_ANGLE (PI/64*TICKS_PRAD)
 
+#define CEIL_DIST 50
+#define CEIL_ANGLE 50
+
 class Navigator
 {
 public:
