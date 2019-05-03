@@ -7,6 +7,7 @@
 #include <common.hpp>
 #include <speed_block.hpp>
 #include <odometry.hpp>
+#include <waypoint.hpp>
 
 #define PERIOD_POS 0.02f
 
@@ -26,13 +27,11 @@ public:
 	~Navigator();
 	void reset();
 	void start();
-	void setDst(float const _x, float const _y, float const _a);
+	void setDst(Waypoint* const _dst);
 	bool ready();
 private:
 	void refresh();
-	float x;
-	float y;
-	float a;
+	Waypoint* dst;
 	bool ready_val;
 	Odometry* const odometry;
 	SpeedBlock* const speed_block;
