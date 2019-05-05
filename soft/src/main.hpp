@@ -4,6 +4,10 @@
 
 // LED
 #define PERIOD_LED 1
+#define LED_R_PIN PB_13
+#define LED_G_PIN PB_14
+#define LED_B_PIN PB_15
+
 
 // Left qei
 #define ENCODER_TIM_LEFT TIM3

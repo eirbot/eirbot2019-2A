@@ -6,6 +6,7 @@
 #include <speed_block.hpp>
 #include <odometry.hpp>
 #include <navigator.hpp>
+#include <RGB.h>
 
 #ifdef DEBUG
 #include <debug.hpp>
@@ -26,6 +27,7 @@ float coef_err_r[] = {0.01* 0.8659f, 0.01* -0.7513f, 0.01* -0.8629, 0.01* 0.7543
 float coef_co_r[] = {1.0f, -0.9107f, -0.1491f, 0.05982f};
 
 DigitalOut led = LED2;
+RGB ledRGB(LED_R_PIN, LED_G_PIN, LED_B_PIN);
 Qei qei_l(ENCODER_TIM_LEFT, &err);
 Qei qei_r(ENCODER_TIM_RIGHT, &err);
 Pid pid_l(coef_err_l, NB_COEF_ERR, coef_co_l, NB_COEF_CO);
@@ -39,6 +41,7 @@ Navigator navigator(&odometry, &speed_block);
 
 int main()
 {
+	ledRGB.off();
 #ifdef DEBUG
 	led = 1;
 	ser.baud(115200);
