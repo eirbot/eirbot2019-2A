@@ -263,13 +263,12 @@ void test_odometry(Serial* const ser, Odometry* const odometry)
 void test_navigator(Serial* const ser, Navigator* const navigator,
 		Odometry* const odometry)
 {
-	float x = 0;
-	float y = 0;
-	float a = 0;
+	Waypoint dst(0.5f, 0.5f, PI/2);
+	float x, y, a;
 	navigator->reset();
 	ser->printf("starting odometry test...\n\r");
 	ser->printf("pattern:\n\rx\t\ty\t\ta\t\tx(m)\t\ty(m)\t\ta(pi.rad)\n\r");
-	navigator->setDst(0.5f*TICKS_PM, 0.5f*TICKS_PM, PI/2*TICKS_PRAD);
+	navigator->setDst(&dst);
 	ser->getc();
 	odometry->start();
 	navigator->start();
@@ -280,6 +279,7 @@ void test_navigator(Serial* const ser, Navigator* const navigator,
 	odometry->reset();
 }
 
+/*
 void test_strat(Serial* const ser, Navigator* const navigator,
 		Odometry* const odometry)
 {
@@ -315,6 +315,7 @@ void test_strat(Serial* const ser, Navigator* const navigator,
 					0.42f*TICKS_PM,
 					1.28f*TICKS_PM,
 					1.44f*TICKS_PM,
+					1.0f*TICKS_PM,
 					};
 	float y_dst[] = {0.85f*TICKS_PM,
 					0.95f*TICKS_PM,
@@ -337,6 +338,7 @@ void test_strat(Serial* const ser, Navigator* const navigator,
 					-0.75f*TICKS_PM,
 					0.23f*TICKS_PM,
 					0.19f*TICKS_PM,
+					0.00f*TICKS_PM,
 					};
 	float a_dst[] = {0.86f*PI*TICKS_PRAD,
 					NAN, //0.84f*PI*TICKS_PRAD,
@@ -359,8 +361,9 @@ void test_strat(Serial* const ser, Navigator* const navigator,
 					0.29f*PI*TICKS_PRAD,
 					-0.06f*PI*TICKS_PRAD,
 					-0.06f*PI*TICKS_PRAD,
+					0.00f*PI*TICKS_PRAD,
 					};
-	int len = 21;
+	int len = 22;
 
 	for (int i = 0; i < len; i++) {
 		navigator->setDst(x_dst[i], y_dst[i], a_dst[i]);
@@ -370,11 +373,12 @@ void test_strat(Serial* const ser, Navigator* const navigator,
 					y/TICKS_PM, a/TICKS_PRAD/PI);
 		}
 	}
-	navigator->reset();
 	ser->getc();
+	navigator->reset();
 	while (!ser->readable()) {
 		odometry->getPos(&x, &y, &a);
 		ser->printf("%8f\t%8f\t%f\r", x/TICKS_PM,
 				y/TICKS_PM, a/TICKS_PRAD/PI);
 	}
 }
+*/

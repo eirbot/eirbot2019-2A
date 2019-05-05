@@ -1,5 +1,5 @@
 
-#include "RGB.h"
+#include <rgb.hpp>
 
 RGB::RGB(PinName r_pin, PinName g_pin, PinName b_pin)
 {

@@ -8,6 +8,7 @@
 #include <speed_block.hpp>
 #include <odometry.hpp>
 #include <navigator.hpp>
+#include <waypoint.hpp>
 
 #define LENGTH_TEST 5.0f
 void length_calibration(Serial* const ser, Qei* const qei_l, Qei* const qei_r);
