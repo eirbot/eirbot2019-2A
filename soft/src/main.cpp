@@ -6,7 +6,7 @@
 #include <speed_block.hpp>
 #include <odometry.hpp>
 #include <navigator.hpp>
-#include <RGB.h>
+#include <rgb.hpp>
 
 #ifdef DEBUG
 #include <debug.hpp>
