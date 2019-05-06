@@ -1,50 +1,27 @@
-
 #include <rgb.hpp>
 
-RGB::RGB(PinName r_pin, PinName g_pin, PinName b_pin)
+RGB::RGB(PinName r_pin, PinName g_pin, PinName b_pin):
+	r(r_pin),
+	g(g_pin),
+	b(b_pin)
 {
-	r_out = new PwmOut(r_pin);
-	g_out = new PwmOut(g_pin);
-	b_out = new PwmOut(b_pin);
 	off();
 }
 
 RGB::~RGB()
 {
-	delete r_out;
-	delete g_out;
-	delete b_out;
-}
-
-void RGB::setColor(Color* color)
-{
-	this->color = color;
-	setPwmColor(color->getRed(), r_out);
-	setPwmColor(color->getGreen(), g_out);
-	setPwmColor(color->getBlue(), b_out);
-}
-
-void RGB::setColor(int color)
-{
-	Color* c = new Color(color);
-	setColor(c);
-	delete c;
-}
-
-Color* RGB::getColor()
-{
-	return color;
 }
 
 void RGB::off()
 {
-	Color* color = new Color(0);
-	setColor(color);
-	delete color;
+	r = 0;
+	g = 0;
+	b = 0;
 }
 
-void RGB::setPwmColor(int value, PwmOut* output)
+void RGB::setColor(bool _r, bool _g, bool _b)
 {
-	output->write(((value) & 0xFF) / 255.0f);
+	r = _r;
+	g = _g;
+	b = _b;
 }
-
