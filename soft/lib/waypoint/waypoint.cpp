@@ -5,6 +5,15 @@
 
 #include <waypoint.hpp>
 
+Waypoint::Waypoint():
+	x(0.0f),
+	y(0.0f),
+	a(0.0f),
+	next(NULL),
+	action(NULL)
+{
+}
+
 Waypoint::Waypoint(float const _x, float const _y, float const _a):
 	x(_x*TICKS_PM),
 	y(_y*TICKS_PM),
@@ -15,7 +24,7 @@ Waypoint::Waypoint(float const _x, float const _y, float const _a):
 }
 
 Waypoint::Waypoint(float const _x, float const _y, float const _a,
-		Waypoint* const _next, void* const _action):
+		Waypoint* const _next, void (*_action)(Waypoint*, float*)):
 	x(_x*TICKS_PM),
 	y(_y*TICKS_PM),
 	a(abs(_a) > PI ? (_a - sg(a)*2*PI)*TICKS_PRAD : _a * TICKS_PRAD),

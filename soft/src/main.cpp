@@ -1,12 +1,13 @@
 #include "main.hpp"
 #include <mbed.h>
+#include <rgb.hpp>
 #include <qei.hpp>
 #include <pid.hpp>
 #include <lmd18200.hpp>
 #include <speed_block.hpp>
 #include <odometry.hpp>
 #include <navigator.hpp>
-#include <rgb.hpp>
+#include <strat.hpp>
 
 #ifdef DEBUG
 #include <debug.hpp>
@@ -78,5 +79,5 @@ int main()
 	test_strat(&ser, &navigator, &odometry);
 #endif
 #endif
-	speed_block.reset();
+	navigator.reset();
 }

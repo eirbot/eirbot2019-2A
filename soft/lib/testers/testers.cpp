@@ -263,12 +263,11 @@ void test_odometry(Serial* const ser, Odometry* const odometry)
 void test_navigator(Serial* const ser, Navigator* const navigator,
 		Odometry* const odometry)
 {
-	Waypoint dst(0.5f, 0.5f, PI/2);
-	float x, y, a;
+		float x, y, a;
 	navigator->reset();
 	ser->printf("starting odometry test...\n\r");
 	ser->printf("pattern:\n\rx\t\ty\t\ta\t\tx(m)\t\ty(m)\t\ta(pi.rad)\n\r");
-	navigator->setDst(&dst);
+	navigator->setDst(0.5f, 0.5f, PI/2);
 	ser->getc();
 	odometry->start();
 	navigator->start();
@@ -279,7 +278,7 @@ void test_navigator(Serial* const ser, Navigator* const navigator,
 	odometry->reset();
 }
 
-/*
+
 void test_strat(Serial* const ser, Navigator* const navigator,
 		Odometry* const odometry)
 {
@@ -381,4 +380,4 @@ void test_strat(Serial* const ser, Navigator* const navigator,
 				y/TICKS_PM, a/TICKS_PRAD/PI);
 	}
 }
-*/
+
