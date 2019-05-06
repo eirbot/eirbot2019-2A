@@ -27,8 +27,10 @@ float coef_co_l[] = {1.0f, -0.9107f, -0.1491f, 0.05982f};
 float coef_err_r[] = {0.01* 0.8659f, 0.01* -0.7513f, 0.01* -0.8629, 0.01* 0.7543};
 float coef_co_r[] = {1.0f, -0.9107f, -0.1491f, 0.05982f};
 
-DigitalOut led = LED2;
-RGB ledRGB(LED_R_PIN, LED_G_PIN, LED_B_PIN);
+DigitalOut led(LED2);
+DigitalIn side(SIDE_PIN);
+DigitalIn waiting_key(KEY_PIN, PullUp);
+RGB rgb(LED_R_PIN, LED_G_PIN, LED_B_PIN);
 Qei qei_l(ENCODER_TIM_LEFT, &err);
 Qei qei_r(ENCODER_TIM_RIGHT, &err);
 Pid pid_l(coef_err_l, NB_COEF_ERR, coef_co_l, NB_COEF_CO);
@@ -38,19 +40,18 @@ LMD18200 motor_r(PWM_R, DIR_R, BREAK_R, DIR_FWD_R, PERIOD_PWM);
 SpeedBlock speed_block(&qei_l, &pid_l, &motor_l, &qei_r, &pid_r, &motor_r);
 Odometry odometry(&qei_l, &qei_r);
 Navigator navigator(&odometry, &speed_block);
+Strat strat(&navigator, &odometry, &rgb);
 
 
 int main()
 {
-	ledRGB.off();
-#ifdef DEBUG
+	strat.reset();
+	rgb.setColor(1, 1, 1);
 	led = 1;
+#ifdef DEBUG
 	ser.baud(115200);
-	wait(3.0f);
-	led = 0;
 	ser.printf("\r\nstart\r\n");
 	ser.printf("error code: %d\r\n", err);
-	//ser.getc();
 #ifdef LENGTH_CALIB
 	length_calibration(&ser, &qei_l, &qei_r);
 #endif
@@ -79,5 +80,14 @@ int main()
 	test_strat(&ser, &navigator, &odometry);
 #endif
 #endif
-	navigator.reset();
+	while(1) {
+		printf("tirette: %d\r", waiting_key.read());
+	}
+	wait(3.0f);
+	led = 0;
+#ifdef REAL
+	strat.init(&wp_00a, &side, &waiting_key);
+	while (strat.run());
+#endif
+	strat.reset();
 }

@@ -8,6 +8,11 @@
 #define LED_G_PIN PB_14
 #define LED_B_PIN PB_15
 
+// WAITING KEY
+#define KEY_PIN PC_14
+
+// SIDE SWITCH
+#define SIDE_PIN PC_13
 
 // Left qei
 #define ENCODER_TIM_LEFT TIM3
