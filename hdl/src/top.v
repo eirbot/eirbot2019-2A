@@ -104,7 +104,7 @@ keymux #(
 	.clk(clk),
 	.rst(rst),
 	.op_i({`MUL, `ADD}),
-	.key_i({8'h4, 8'h5}),
+	.key_i({4'h4, 4'h5}),
 	.A_i({`INA, `INB}),
 	.B_i({`INB, `INA}),
 	.keyback_i(key2),

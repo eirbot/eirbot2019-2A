@@ -9,7 +9,7 @@
 
 `include "src/config.vh"
 `include "lib/counter.v"
-`include "lib/pwm.v"
+`include "lib/LMD18200.v"
 `include "lib/qei.v"
 
 module speedblock #(
@@ -51,8 +51,8 @@ wire [pid_res-1:0] coR_o;
 reg [pid_res-1:0] pv_L;
 reg [pid_res-1:0] pv_R;
 /* PWM signals */
-wire [pwm_res-1:0] pwmL_i = coL_o[15:15-pwm_res];
-wire [pwm_res-1:0] pwmR_i = coR_o[15:15-pwm_res];
+wire [pwm_res:0] pwmL_i = coL_o[15:15-pwm_res];
+wire [pwm_res:0] pwmR_i = coR_o[15:15-pwm_res];
 /* QEI signals */
 reg qeiL_clr;
 wire [qei_res-1:0] qeiL_o;
@@ -99,26 +99,32 @@ counter #(
 	.overflow(pid_en)
 );
 
-pwm #(
+LMD18200 #(
 	.freq(pwm_freq),
-	.nbits(pwm_res)
-) m_pwmR (
-	.clk(clk),
-	.rst(rst),
-	.en(en),
-	.pwm_i(pwmR_i),
-	.pwm_o(pwmR_o)
-);
-
-pwm #(
-	.freq(pwm_freq),
-	.nbits(pwm_res)
-) m_pwmL (
+	.nbits(pwm_res+1),
+	.dir_motor(`DIR_MOTOR_L)
+) m_LMD18200L (
 	.clk(clk),
 	.rst(rst),
 	.en(en),
 	.pwm_i(pwmL_i),
-	.pwm_o(pwmL_o)
+	.pwm_o(pwmL_o),
+	.dir_o(1'b0),
+	.br_o(1'b0),
+);
+
+LMD18200 #(
+	.freq(pwm_freq),
+	.nbits(pwm_res+1),
+	.dir_motor(`DIR_MOTOR_R)
+) m_LMD18200R (
+	.clk(clk),
+	.rst(rst),
+	.en(en),
+	.pwm_i(pwmR_i),
+	.pwm_o(pwmR_o),
+	.dir_o(1'b0),
+	.br_o(1'b0),
 );
 
 qei #(

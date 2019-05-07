@@ -12,9 +12,11 @@
 `define PID_SPEED_FREQ 333
 `define PID_POS_FREQ 333
 
-// PWM parameters
+// Motors parameters
 `define PWM_FREQ (`CLK_FREQ/2**11)
 `define PWM_RES 10
+`define DIR_MOTOR_L 1'b0
+`define DIR_MOTOR_R 1'b1
 
 // QEI parameters
 `define QEI_RES 16
