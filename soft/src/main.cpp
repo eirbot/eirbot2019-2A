@@ -52,6 +52,9 @@ int main()
 	ser.baud(115200);
 	ser.printf("\r\nstart\r\n");
 	ser.printf("error code: %d\r\n", err);
+	while (1) {
+		printf("caca: %d\r", waiting_key.read());
+	}
 #ifdef LENGTH_CALIB
 	length_calibration(&ser, &qei_l, &qei_r);
 #endif
@@ -79,15 +82,11 @@ int main()
 #ifdef STRAT
 	test_strat(&ser, &navigator, &odometry);
 #endif
+#ifdef REAL
+	test_real(&ser, &strat, &odometry, &side, &waiting_key);
 #endif
-	while(1) {
-		printf("tirette: %d\r", waiting_key.read());
-	}
+#endif
 	wait(3.0f);
 	led = 0;
-#ifdef REAL
-	strat.init(&wp_00a, &side, &waiting_key);
-	while (strat.run());
-#endif
 	strat.reset();
 }

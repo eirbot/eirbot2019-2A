@@ -9,7 +9,7 @@
 #define LED_B_PIN PB_15
 
 // WAITING KEY
-#define KEY_PIN PC_14
+#define KEY_PIN PA_0
 
 // SIDE SWITCH
 #define SIDE_PIN PC_13

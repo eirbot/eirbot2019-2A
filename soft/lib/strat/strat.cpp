@@ -33,16 +33,18 @@ void Strat::init(Waypoint* const _wp, DigitalIn* const side,
 	rgb->setColor(1, 0, 0);
 	wp = _wp;
 	odometry->setPos(wp->x, wp->y, wp->a);
-	while(!*waiting_key);
-	while(*waiting_key) {
-		if (*side == VIOLET) {
+	//while(!waiting_key->read());
+	//while(waiting_key->read()) {
+		if (side->read() == VIOLET) {
 			rgb->setColor(1, 0, 1);
-		} else if (*side == YELLOW) {
+		} else if (side->read() == YELLOW) {
 			rgb->setColor(1, 1, 0);
 		} else {
 			rgb->setColor(1, 0, 0);
 		}
-	}
+	//}
+	wait(3.0f); // To remove when waiting key is functionnal
+	nav->start();
 	t.start();
 }
 

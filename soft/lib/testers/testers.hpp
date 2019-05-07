@@ -9,6 +9,7 @@
 #include <odometry.hpp>
 #include <navigator.hpp>
 #include <waypoint.hpp>
+#include <strat.hpp>
 
 #define LENGTH_TEST 5.0f
 void length_calibration(Serial* const ser, Qei* const qei_l, Qei* const qei_r);
@@ -39,5 +40,7 @@ void test_navigator(Serial* const ser, Navigator* const navigator,
 void test_strat(Serial* const ser, Navigator* const navigator,
 		Odometry* const odometry);
 
+void test_real(Serial* const ser, Strat* const strat, Odometry* const odometry,
+		DigitalIn* const side, DigitalIn* const key);
 
 #endif
