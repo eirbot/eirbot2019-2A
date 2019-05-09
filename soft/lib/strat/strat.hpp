@@ -9,6 +9,8 @@
 #define VIOLET 1
 #define YELLOW 0
 
+#define DEBOUNCE_MAX 4096
+
 class Strat {
 public:
 	Strat(Navigator* const _nav, Odometry* const _odometry,
@@ -28,10 +30,10 @@ private:
 	float t_wp;
 };
 
-extern void wp_00a_action(Waypoint* wp, Navigator* nav, float* t_wp);
+extern void wp_00a_action(Waypoint** wp, Navigator* nav, float* t_wp);
 extern Waypoint wp_00a;
 
-extern void wp_10a_action(Waypoint* wp, Navigator* nav, float* t_wp);
+extern void wp_10a_action(Waypoint** wp, Navigator* nav, float* t_wp);
 extern Waypoint wp_10a;
 
 extern Waypoint wp_11a;

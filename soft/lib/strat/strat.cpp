@@ -33,8 +33,12 @@ void Strat::init(Waypoint* const _wp, DigitalIn* const side,
 	rgb->setColor(1, 0, 0);
 	wp = _wp;
 	odometry->setPos(wp->x, wp->y, wp->a);
-	//while(!waiting_key->read());
-	//while(waiting_key->read()) {
+	unsigned int debounce_counter = 0;
+	while(debounce_counter < DEBOUNCE_MAX) {
+		debounce_counter += !waiting_key->read();
+	}
+	debounce_counter = 0;
+	while(debounce_counter < DEBOUNCE_MAX) {
 		if (side->read() == VIOLET) {
 			rgb->setColor(1, 0, 1);
 		} else if (side->read() == YELLOW) {
@@ -42,27 +46,28 @@ void Strat::init(Waypoint* const _wp, DigitalIn* const side,
 		} else {
 			rgb->setColor(1, 0, 0);
 		}
-	//}
-	wait(3.0f); // To remove when waiting key is functionnal
+		debounce_counter += waiting_key->read();
+	}
 	nav->start();
 	t.start();
 }
 
 bool Strat::run()
 {
-	wp->action(wp, nav, &t_wp);
+	wp->action(&wp, nav, &t_wp);
 	if (wp == NULL || wp->action == NULL) {
-		return true;
+		return false;
 	} else {
 		nav->setDst(wp->x, wp->y, wp->a);
 	}
-	return true; //(t.read() < 100.0f);
+	return (t.read() < 100.0f);
 }
 
 Waypoint wp_00a(1.03f, 1.31f, -PI/2, &wp_10a, wp_00a_action);
-void wp_00a_action(Waypoint* wp, Navigator* nav, float* t_wp){
+void wp_00a_action(Waypoint** wp, Navigator* nav, float* t_wp){
 	*t_wp = 0.0f;
-	wp = wp->next;
+	*wp = (*wp)->next;
+	printf("%f\t%f\t%f\n\r", (*wp)->x, (*wp)->y, (*wp)->a);
 }
 
 Waypoint wp_10a(1.10f, 0.85f, 0.85f*PI, &wp_11a, wp_10a_action);
@@ -88,9 +93,9 @@ Waypoint wp_29a(1.28f, 0.23f, -0.06f*PI, &wp_30a, wp_10a_action);
 Waypoint wp_30a(1.44f, 0.19f, -0.06f*PI, &wp_31a, wp_10a_action);
 Waypoint wp_31a(1.00f, 0.00f, 0.00f*PI, NULL, wp_10a_action);
 
-void wp_10a_action(Waypoint* wp, Navigator* nav, float* t_wp){
+void wp_10a_action(Waypoint** wp, Navigator* nav, float* t_wp){
 	if (nav->ready()) {
 		*t_wp = 0.0f;
-		wp = wp->next;
+		*wp = (*wp)->next;
 	}
 }
