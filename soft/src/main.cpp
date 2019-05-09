@@ -1,6 +1,7 @@
 #include "main.hpp"
 #include <mbed.h>
 #include <rgb.hpp>
+#include <servo.hpp>
 #include <qei.hpp>
 #include <pid.hpp>
 #include <lmd18200.hpp>
@@ -50,6 +51,7 @@ int main()
 	rgb.setColor(1, 1, 1);
 	led = 1;
 	seg.printf("000");
+	servoTimerInit();
 	wait(3.0f);
 #ifdef DEBUG
 	ser.baud(115200);
