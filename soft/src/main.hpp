@@ -8,6 +8,10 @@
 #define LED_G_PIN PB_14
 #define LED_B_PIN PB_15
 
+// 7 SEG
+#define SEG_RX PD_2
+#define SEG_TX PC_12
+
 // WAITING KEY
 #define KEY_PIN PA_0
 

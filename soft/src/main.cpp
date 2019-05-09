@@ -31,6 +31,7 @@ DigitalOut led(LED2);
 DigitalIn side(SIDE_PIN);
 DigitalIn waiting_key(KEY_PIN, PullUp);
 RGB rgb(LED_R_PIN, LED_G_PIN, LED_B_PIN);
+Serial seg(SEG_TX, SEG_RX);
 Qei qei_l(ENCODER_TIM_LEFT, &err);
 Qei qei_r(ENCODER_TIM_RIGHT, &err);
 Pid pid_l(coef_err_l, NB_COEF_ERR, coef_co_l, NB_COEF_CO);
@@ -48,13 +49,12 @@ int main()
 	strat.reset();
 	rgb.setColor(1, 1, 1);
 	led = 1;
+	seg.printf("000");
+	wait(3.0f);
 #ifdef DEBUG
 	ser.baud(115200);
 	ser.printf("\r\nstart\r\n");
 	ser.printf("error code: %d\r\n", err);
-	while (1) {
-		printf("caca: %d\r", waiting_key.read());
-	}
 #ifdef LENGTH_CALIB
 	length_calibration(&ser, &qei_l, &qei_r);
 #endif
