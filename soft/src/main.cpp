@@ -42,7 +42,7 @@ LMD18200 motor_r(PWM_R, DIR_R, BREAK_R, DIR_FWD_R, PERIOD_PWM);
 SpeedBlock speed_block(&qei_l, &pid_l, &motor_l, &qei_r, &pid_r, &motor_r);
 Odometry odometry(&qei_l, &qei_r);
 Navigator navigator(&odometry, &speed_block);
-Strat strat(&navigator, &odometry, &rgb);
+Strat strat(&navigator, &odometry, &seg, &rgb);
 
 
 int main()
@@ -50,6 +50,7 @@ int main()
 	strat.reset();
 	rgb.setColor(1, 1, 1);
 	led = 1;
+	ser.baud(9600);
 	seg.printf("000");
 	servoTimerInit();
 	wait(3.0f);
@@ -88,7 +89,5 @@ int main()
 	test_real(&ser, &strat, &odometry, &side, &waiting_key);
 #endif
 #endif
-	wait(3.0f);
-	led = 0;
 	strat.reset();
 }

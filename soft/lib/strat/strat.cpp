@@ -6,12 +6,14 @@
 #include <strat.hpp>
 
 Strat::Strat(Navigator* const _nav, Odometry* const _odometry,
-		RGB* const _rgb):
+		Serial* const _seg, RGB* const _rgb):
 	nav(_nav),
 	odometry(_odometry),
+	seg(_seg),
 	rgb(_rgb)
 {
 	reset();
+	ticker.attach(callback(this, &Strat::printSeg), 0.1);
 }
 
 Strat::~Strat()
@@ -24,6 +26,11 @@ void Strat::reset()
 	nav->reset();
 	t.stop();
 	t.reset();
+}
+
+void Strat::printSeg()
+{
+	seg->printf("%3.3d", points);
 }
 
 void Strat::init(Waypoint* const _wp, DigitalIn* const side,
@@ -48,54 +55,278 @@ void Strat::init(Waypoint* const _wp, DigitalIn* const side,
 		}
 		debounce_counter += waiting_key->read();
 	}
+	points = 0;
 	nav->start();
 	t.start();
 }
 
 bool Strat::run()
 {
-	wp->action(&wp, nav, &t_wp);
-	if (wp == NULL || wp->action == NULL) {
+	points += wp->action(&wp, nav, &t, &t_wp);
+	if (wp == NULL || wp->action == NULL) {// || t.read() > 98.0f) {
+		float x, y, a;
+		odometry->getPos(&x, &y, &a);
+		odometry->setPos(x, y, a);
+		points += 35;
 		return false;
 	} else {
 		nav->setDst(wp->x, wp->y, wp->a);
+		return true;
 	}
-	return (t.read() < 100.0f);
 }
 
-Waypoint wp_00a(1.03f, 1.31f, -PI/2, &wp_10a, wp_00a_action);
-void wp_00a_action(Waypoint** wp, Navigator* nav, float* t_wp){
-	*t_wp = 0.0f;
+// Init point
+Waypoint wp_00a(0.7085f, 1.3165f, -PI/2, &wp_10a, wp_00a_action);
+int wp_00a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	*t_wp = t->read();
 	*wp = (*wp)->next;
-	printf("%f\t%f\t%f\n\r", (*wp)->x, (*wp)->y, (*wp)->a);
+	return 5;
 }
 
-Waypoint wp_10a(1.10f, 0.85f, 0.85f*PI, &wp_11a, wp_10a_action);
-Waypoint wp_11a(0.85f, 0.95f, NAN, &wp_12a, wp_10a_action);
-Waypoint wp_12a(0.58f, 1.32f, NAN, &wp_13a, wp_10a_action);
-Waypoint wp_13a(0.69f, 0.95f, -PI, &wp_14a, wp_10a_action);
-Waypoint wp_14a(0.45f, 0.95f, 0.54f*PI, &wp_15a, wp_10a_action);
-Waypoint wp_15a(0.44f, 1.30f, NAN, &wp_16a, wp_10a_action);
-Waypoint wp_16a(0.79f, 0.15f, 0.06f*PI, &wp_17a, wp_10a_action);
-Waypoint wp_17a(1.37f, 0.29f, 0.77f*PI, &wp_18a, wp_10a_action);
-Waypoint wp_18a(0.51f, 1.17f, NAN, &wp_19a, wp_10a_action);
-Waypoint wp_19a(1.38f, 0.24f, -0.97f*PI, &wp_20a, wp_10a_action);
-Waypoint wp_20a(1.03f, 0.22f, 0.63f*PI, &wp_21a, wp_10a_action);
-Waypoint wp_21a(0.51f, 0.73f, NAN, &wp_22a, wp_10a_action);
-Waypoint wp_22a(0.51f, 1.11f, NAN, &wp_23a, wp_10a_action);
-Waypoint wp_23a(0.66f, 0.75f, NAN, &wp_24a, wp_10a_action);
-Waypoint wp_24a(0.28f, -0.13f, 0.50f*PI, &wp_25a, wp_10a_action);
-Waypoint wp_25a(0.28f, -0.27f, NAN, &wp_26a, wp_10a_action);
-Waypoint wp_26a(0.42f, -0.77f, 1.00f*PI, &wp_27a, wp_10a_action);
-Waypoint wp_27a(0.32f, -0.75f, 1.00f*PI, &wp_28a, wp_10a_action);
-Waypoint wp_28a(0.42f, -0.75f, 0.29f*PI, &wp_29a, wp_10a_action);
-Waypoint wp_29a(1.28f, 0.23f, -0.06f*PI, &wp_30a, wp_10a_action);
-Waypoint wp_30a(1.44f, 0.19f, -0.06f*PI, &wp_31a, wp_10a_action);
-Waypoint wp_31a(1.00f, 0.00f, 0.00f*PI, NULL, wp_10a_action);
+// Finish
+Waypoint wp_00z(NAN, NAN, NAN, NULL, wp_00z_action);
+int wp_00z_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	*t_wp = t->read();
+	*wp = NULL;
+	return 0;
+}
 
-void wp_10a_action(Waypoint** wp, Navigator* nav, float* t_wp){
+// Get the puck before the blue area
+Waypoint wp_10a(0.995f, 1.049f, -0.80f*PI, &wp_11a, wp_10a_action);
+int wp_10a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
 	if (nav->ready()) {
-		*t_wp = 0.0f;
+		*t_wp = t->read();
 		*wp = (*wp)->next;
 	}
+	return 0;
+}
+
+// Get the puck before the green area
+Waypoint wp_11a(0.859f, 0.966f, NAN, &wp_12a, wp_11a_action);
+int wp_11a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+	}
+	return 0;
+}
+
+// Go inside the red area
+Waypoint wp_12a(0.537f, 1.303f, NAN, &wp_13a, wp_12a_action);
+int wp_12a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+		return 2;
+	}
+	return 0;
+}
+
+// Get the puck before the red area
+Waypoint wp_13a(0.689f, 0.976f, -1.00f*PI, &wp_14a, wp_13a_action);
+int wp_13a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+	}
+	return 0;
+}
+
+// Push it
+Waypoint wp_14a(0.509f, 0.974f, 0.50f*PI, &wp_15a, wp_14a_action);
+int wp_14a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+	}
+	return 0;
+}
+
+// Go inside the red area
+Waypoint wp_15a(0.500f, 1.219f, NAN, &wp_20a, wp_15a_action);
+int wp_15a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+		return 11;
+	}
+	return 0;
+}
+
+// Go back to 1st pass on storm pucks
+Waypoint wp_20a(0.790f, 0.150f, 0.00f*PI, &wp_21a, wp_20a_action);
+int wp_20a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+	}
+	return 0;
+}
+
+// Place behind the storm
+Waypoint wp_21a(1.370f, 0.290f, 0.77f*PI, &wp_22a, wp_21a_action);
+int wp_21a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+	}
+	return 0;
+}
+
+// Push the pucks in the red area
+Waypoint wp_22a(0.510f, 1.170f, NAN, &wp_23a, wp_22a_action);
+int wp_22a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+		return 2;
+	}
+	return 0;
+}
+
+// Go back to the storm
+Waypoint wp_23a(1.380f, 0.240f, -1.00f*PI, &wp_24a, wp_23a_action);
+int wp_23a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+	}
+	return 0;
+}
+
+// Replace to grab pucks
+Waypoint wp_24a(1.030f, 0.220f, 0.63f*PI, &wp_25a, wp_24a_action);
+int wp_24a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+	}
+	return 0;
+}
+
+// Push pucks near the red area
+Waypoint wp_25a(0.510f, 0.730f, NAN, &wp_26a, wp_25a_action);
+int wp_25a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+	}
+	return 0;
+}
+
+// Go in the red area
+Waypoint wp_26a(0.510f, 1.110f, NAN, &wp_30a, wp_26a_action);
+int wp_26a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+		return 12;
+	}
+	return 0;
+}
+
+// Go next to the accelerator
+Waypoint wp_30a(0.290f, -0.258f, 0.35f*PI, &wp_31a, wp_30a_action);
+int wp_30a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	static char state = 0;
+	if (nav->ready() && state == 0) {
+		servoSetPwmDuty(SERVO_DEPLOYED);
+		*t_wp = t->read();
+		state = 1;
+	} else if (nav->ready() && state == 1 && (t->read() - *t_wp) > 1.0f) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+		state = 0;
+	}
+	return 0;
+}
+
+// Push atom downto accelerator
+Waypoint wp_31a(0.290f, -0.258f, 0.50f*PI, &wp_32a, wp_31a_action);
+int wp_31a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+		return 20;
+	}
+	return 0;
+}
+
+// Retract arm
+Waypoint wp_32a(0.290f, -0.258f, 0.35*PI, &wp_33a, wp_32a_action);
+int wp_32a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	static char state = 0;
+	if (nav->ready() && state == 0) {
+		servoSetPwmDuty(SERVO_INIT);
+		*t_wp = t->read();
+		state = 1;
+	} else if (nav->ready() && state == 1 && (t->read() - *t_wp) > 1.0f) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+		state = 0;
+	}
+	return 0;
+}
+
+// Go in front of goldonium
+Waypoint wp_33a(0.445f, -0.735f, -1.00f*PI, &wp_34a, wp_33a_action);
+int wp_33a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+	}
+	return 0;
+}
+
+// Grab goldonium
+Waypoint wp_34a(0.325f, -0.735f, -1.00f*PI, &wp_35a, wp_34a_action);
+int wp_34a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+		return 20;
+	}
+	return 0;
+}
+
+// Go back
+Waypoint wp_35a(0.445f, -0.735f, -1.00f*PI, &wp_35a, wp_35a_action);
+int wp_35a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+	}
+	return 0;
+}
+
+// Go to the scale
+Waypoint wp_36a(0.445f, -0.735f, -1.00f*PI, &wp_00z, wp_36a_action);
+int wp_36a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+	}
+	return 0;
 }

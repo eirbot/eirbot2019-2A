@@ -11,13 +11,13 @@ public:
 	Waypoint(float const _x, float const _y, float const _a);
 	Waypoint(float const _x, float const _y, float const _a,
 			Waypoint* const _next,
-			void (*_action)(Waypoint**, Navigator*, float*));
+			int (*_action)(Waypoint**, Navigator*, Timer*, float*));
 	~Waypoint();
 	float const x;
 	float const y;
 	float const a;
 	Waypoint* next;
-	void (*action)(Waypoint** wp, Navigator* nav, float* t_wp);
+	int (*action)(Waypoint** wp, Navigator* nav, Timer* t,float* t_wp);
 };
 
 #endif

@@ -24,7 +24,8 @@ Waypoint::Waypoint(float const _x, float const _y, float const _a):
 }
 
 Waypoint::Waypoint(float const _x, float const _y, float const _a,
-		Waypoint* const _next, void (*_action)(Waypoint**, Navigator*, float*)):
+		Waypoint* const _next, int (*_action)(Waypoint**, Navigator*,
+			Timer*, float*)):
 	x(_x*TICKS_PM),
 	y(_y*TICKS_PM),
 	a(abs(_a) > PI ? (_a - sg(a)*2*PI)*TICKS_PRAD : _a * TICKS_PRAD),
