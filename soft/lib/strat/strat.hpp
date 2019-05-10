@@ -7,8 +7,8 @@
 #include <waypoint.hpp>
 #include <servo.hpp>
 
-#define VIOLET 1
-#define YELLOW 0
+#define VIOLET 0
+#define YELLOW 1
 
 #define DEBOUNCE_MAX 4096
 
@@ -19,8 +19,7 @@ public:
 	~Strat();
 	void reset();
 	void printSeg();
-	void init(Waypoint* const _wp, DigitalIn* const side,
-			DigitalIn* const waiting_key);
+	void init(DigitalIn* const side_switch, DigitalIn* const waiting_key);
 	bool run();
 private:
 	Navigator* const nav;
@@ -32,6 +31,7 @@ private:
 	Ticker ticker;
 	float t_wp;
 	int points;
+	bool side;
 };
 
 extern Waypoint wp_00a;
@@ -79,8 +79,11 @@ extern Waypoint wp_34a;
 extern int wp_34a_action(Waypoint** wp, Navigator* nav, Timer* t, float* t_wp);
 extern Waypoint wp_35a;
 extern int wp_35a_action(Waypoint** wp, Navigator* nav, Timer* t, float* t_wp);
-extern Waypoint wp_36a;
-extern int wp_36a_action(Waypoint** wp, Navigator* nav, Timer* t, float* t_wp);
+
+extern Waypoint wp_40a;
+extern int wp_40a_action(Waypoint** wp, Navigator* nav, Timer* t, float* t_wp);
+extern Waypoint wp_41a;
+extern int wp_41a_action(Waypoint** wp, Navigator* nav, Timer* t, float* t_wp);
 
 #endif
 

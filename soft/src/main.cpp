@@ -90,4 +90,5 @@ int main()
 #endif
 #endif
 	strat.reset();
+	while (1);
 }

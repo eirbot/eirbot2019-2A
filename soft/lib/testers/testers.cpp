@@ -388,7 +388,7 @@ void test_real(Serial* const ser, Strat* const strat, Odometry* const odometry,
 	strat->reset();
 	ser->printf("starting real test...\n\r");
 	ser->printf("init...\n\r");
-	strat->init(&wp_00a, side, key);
+	strat->init(side, key);
 	ser->printf("run: side=%d\n\r", side->read());
 	while(strat->run() && !ser->readable()) {
 		odometry->getPos(&x, &y, &a);
