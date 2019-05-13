@@ -6,12 +6,16 @@ set_io G_o 39
 set_io B_o 40
 set_io R_o 41
 
-# PWM
-set_io pwmL_o 28
-set_io pwmR_o 46
+# Motors
+set_io pwmL_o 47
+set_io pwmR_o 3
+set_io dirL_o 45
+set_io dirR_o 4
+set_io brL_o 48
+set_io brR_o 44
 
 # QEI
-set_io qeiLA_i 37
-set_io qeiLB_i 31
-set_io qeiRA_i 35
-set_io qeiRB_i 32
+set_io qeiLA_i 9
+set_io qeiLB_i 6
+set_io qeiRA_i 18
+set_io qeiRB_i 11

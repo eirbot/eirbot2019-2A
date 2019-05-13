@@ -35,9 +35,13 @@ module speedblock #(
 	// Outputs
 	output pwmL_o,
 	output pwmR_o,
+	output dirL_o,
+	output dirR_o,
+	output brL_o,
+	output brR_o,
 	// ALU connections
-	input [2*`KEY_SIZE-1:0] alu_key_i,
-	input [2*`OPERAND_SIZE-1:0] alu_O_i,
+	input [`KEY_SIZE-1:0] alu_key_i,
+	input [`OPERAND_SIZE-1:0] alu_O_i,
 	output [2*`KEY_SIZE-1:0] alu_key_o,
 	output [2*`OPCODE_SIZE-1:0] alu_op_o,
 	output [2*`OPERAND_SIZE-1:0] alu_A_o,
@@ -76,8 +80,8 @@ wire [`OPERAND_SIZE-1:0] pidR_B_o;
 wire [`KEY_SIZE-1:0] pidR_key_i;
 wire [`OPERAND_SIZE-1:0] pidR_O_i;
 // For speedblock pors
-assign alu_key_i = {pidL_key_i, pidR_key_i};
-assign alu_O_i = {pidL_O_i, pidR_O_i};
+//assign alu_key_i = {pidL_key_i, pidR_key_i};
+//assign alu_O_i = {pidL_O_i, pidR_O_i};
 assign alu_key_o = {pidL_key_o, pidR_key_o};
 assign alu_op_o = {pidL_op_o, pidR_op_o};
 assign alu_A_o = {pidL_A_o, pidR_A_o};
@@ -109,8 +113,8 @@ LMD18200 #(
 	.en(en),
 	.pwm_i(pwmL_i),
 	.pwm_o(pwmL_o),
-	.dir_o(1'b0),
-	.br_o(1'b0),
+	.dir_o(dirL_o),
+	.br_o(brL_o)
 );
 
 LMD18200 #(
@@ -123,8 +127,8 @@ LMD18200 #(
 	.en(en),
 	.pwm_i(pwmR_i),
 	.pwm_o(pwmR_o),
-	.dir_o(1'b0),
-	.br_o(1'b0),
+	.dir_o(dirR_o),
+	.br_o(brR_o)
 );
 
 qei #(
@@ -152,7 +156,8 @@ qei #(
 );
 
 pid #(
-	.nbits(pid_res)
+	.nbits(pid_res),
+	.base_key(`PIDL_BASE_KEY)
 ) m_pidL (
 	.clk(clk),
 	.rst(rst),
@@ -161,8 +166,8 @@ pid #(
 	.sp_i(speedL_i),
 	.pv_i(pv_L),
 	.co_o(coL_o),
-	.alu_key_i(pidL_key_i),
-	.alu_O_i(pidL_O_i),
+	.alu_key_i(alu_key_i),
+	.alu_O_i(alu_O_i),
 	.alu_key_o(pidL_key_o),
 	.alu_op_o(pidL_op_o),
 	.alu_A_o(pidL_A_o),
@@ -170,7 +175,8 @@ pid #(
 );
 
 pid #(
-	.nbits(pid_res)
+	.nbits(pid_res),
+	.base_key(`PIDR_BASE_KEY)
 ) m_pidR (
 	.clk(clk),
 	.rst(rst),
@@ -179,8 +185,8 @@ pid #(
 	.sp_i(speedR_i),
 	.pv_i(pv_R),
 	.co_o(coR_o),
-	.alu_key_i(pidR_key_i),
-	.alu_O_i(pidR_O_i),
+	.alu_key_i(alu_key_i),
+	.alu_O_i(alu_O_i),
 	.alu_key_o(pidR_key_o),
 	.alu_op_o(pidR_op_o),
 	.alu_A_o(pidR_A_o),

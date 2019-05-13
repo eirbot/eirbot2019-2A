@@ -33,13 +33,13 @@ module pid #(
 
 localparam key1 = base_key;
 localparam key2 = base_key+1;
-localparam beta1 = 0;
-localparam beta2 = 0;
-localparam beta3 = 0;
-localparam alpha0 = 0;
-localparam alpha1 = 0;
-localparam alpha2 = 0;
-localparam alpha3 = 0;
+localparam beta1 = -32'd53039;
+localparam beta2 = -32'h14469;
+localparam beta3 = +32'h1972;
+localparam alpha0 = +32'h645;
+localparam alpha1 = -32'h549;
+localparam alpha2 = -32'h642;
+localparam alpha3 = +32'h552;
 reg [7:0] state;
 reg [nbits-1:0] e0;
 reg [nbits-1:0] e1;

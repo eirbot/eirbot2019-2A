@@ -11,6 +11,8 @@
 `define PID_RES 32
 `define PID_SPEED_FREQ 333
 `define PID_POS_FREQ 333
+`define PIDL_BASE_KEY 4'h02
+`define PIDR_BASE_KEY 4'h05
 
 // Motors parameters
 `define PWM_FREQ (`CLK_FREQ/2**11)

@@ -24,7 +24,8 @@ module LMD18200 #(
 	output reg br_o
 );
 
-wire pwm_unsigned = pwm_i[nbits-1] ? (~pwm_i[nbits-2:0]+1) : pwm_i[nbits-2:0];
+wire [nbits-2:0] pwm_unsigned = pwm_i[nbits-1] ?
+		(~pwm_i[nbits-2:0]+1) : pwm_i[nbits-2:0];
 
 pwm #(
     .freq(freq),
