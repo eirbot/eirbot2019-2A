@@ -18,14 +18,14 @@ module LMD18200 #(
 	input clk,
 	input rst,
 	input en,
-	input [nbits-1:0] pwm_i,
+	input signed [nbits-1:0] pwm_i,
 	output pwm_o,
 	output reg dir_o,
 	output reg br_o
 );
 
-wire [nbits-2:0] pwm_unsigned = pwm_i[nbits-1] ?
-		(~pwm_i[nbits-2:0]+1) : pwm_i[nbits-2:0];
+wire [nbits-2:0] pwm_signal = pwm_i[nbits-1] ?
+	~pwm_i[nbits-2:0]+1 : pwm_i[nbits-2:0];
 
 pwm #(
     .freq(freq),
@@ -34,7 +34,7 @@ pwm #(
     .clk(clk),
     .rst(rst),
     .en(en),
-    .pwm_i(pwm_unsigned),
+    .pwm_i(pwm_signal),
     .pwm_o(pwm_o)
 );
 
