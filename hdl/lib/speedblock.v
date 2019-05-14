@@ -41,11 +41,11 @@ module speedblock #(
 	output brR_o,
 	// ALU connections
 	input [`KEY_SIZE-1:0] alu_key_i,
-	input [`OPERAND_SIZE-1:0] alu_O_i,
+	input signed [`OPERAND_SIZE-1:0] alu_O_i,
 	output [2*`KEY_SIZE-1:0] alu_key_o,
 	output [2*`OPCODE_SIZE-1:0] alu_op_o,
-	output [2*`OPERAND_SIZE-1:0] alu_A_o,
-	output [2*`OPERAND_SIZE-1:0] alu_B_o
+	output signed [2*`OPERAND_SIZE-1:0] alu_A_o,
+	output signed [2*`OPERAND_SIZE-1:0] alu_B_o
 );
 
 /* PID signals */
@@ -55,8 +55,8 @@ wire [pid_res-1:0] coR_o;
 reg [pid_res-1:0] pv_L;
 reg [pid_res-1:0] pv_R;
 /* PWM signals */
-wire [pwm_res:0] pwmL_i = coL_o[15:15-pwm_res];
-wire [pwm_res:0] pwmR_i = coR_o[15:15-pwm_res];
+wire [pwm_res:0] pwmL_i = {coL_o[`OPERAND_SIZE-1], coL_o[15:15-pwm_res+1]};
+wire [pwm_res:0] pwmR_i = {coR_o[`OPERAND_SIZE-1], coR_o[15:15-pwm_res+1]};
 /* QEI signals */
 reg qeiL_clr;
 wire [qei_res-1:0] qeiL_o;
