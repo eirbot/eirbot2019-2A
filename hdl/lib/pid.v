@@ -1,7 +1,7 @@
 /*
  * PID module
  * TODO
- * A lot
+ * Change saturation at state 15, bc of sign
  */
 
 `ifndef PID_V
@@ -24,11 +24,11 @@ module pid #(
 	output reg [nbits-1:0] co_o,
 	// ALU ports
 	input [`KEY_SIZE-1:0] alu_key_i,
-	input [nbits-1:0] alu_O_i,
+	input signed [nbits-1:0] alu_O_i,
 	output reg [`KEY_SIZE-1:0] alu_key_o,
 	output reg [`OPCODE_SIZE-1:0] alu_op_o,
-	output reg [nbits-1:0] alu_A_o,
-	output reg [nbits-1:0] alu_B_o
+	output signed reg [nbits-1:0] alu_A_o,
+	output signed reg [nbits-1:0] alu_B_o
 );
 
 localparam key1 = base_key;
@@ -41,14 +41,14 @@ localparam alpha1 = -32'h549;
 localparam alpha2 = -32'h642;
 localparam alpha3 = +32'h552;
 reg [7:0] state;
-reg [nbits-1:0] e0;
-reg [nbits-1:0] e1;
-reg [nbits-1:0] e2;
-reg [nbits-1:0] e3;
-reg [nbits-1:0] u0;
-reg [nbits-1:0] u1;
-reg [nbits-1:0] u2;
-reg [nbits-1:0] u3;
+reg signed [nbits-1:0] e0;
+reg signed [nbits-1:0] e1;
+reg signed [nbits-1:0] e2;
+reg signed [nbits-1:0] e3;
+reg signed [nbits-1:0] u0;
+reg signed [nbits-1:0] u1;
+reg signed [nbits-1:0] u2;
+reg signed [nbits-1:0] u3;
 
 always @(posedge clk) begin
 	if (rst || clr) begin
@@ -57,6 +57,7 @@ always @(posedge clk) begin
 		alu_op_o <= {`OPCODE_SIZE{0}};
 		alu_A_o <= {nbits{0}};
 		alu_B_o <= {nbits{0}};
+		state <= 8'd0;
 	//calcul de l'erreur
 	end else if (en && state == 0) begin
 		u0 <= {nbits{0}};
@@ -169,11 +170,15 @@ always @(posedge clk) begin
 		alu_A_o <= u0;
 		alu_B_o <= alu_O_i;
 		state <= state + 1;
-	end else if (state == 13 && alu_key_i == alu_key_o) begin
-		u0 <= alu_O_i;
-		alu_key_o <= 0;
+	end else if (state == 14 && alu_key_i == alu_key_o) begin
+		u0 <= alu_O_i < -32'd52429 ? -32'd52429 :
+				alu_O_i > 32'd52429 ? 32'd52429 :
+				alu_O_i;
+		alu_key_o <= `KEY_SIZE'd0;
+		state <= state + 1;
+	end else if (state == 15) begin
 		co_o <= u0;
-		state <= 0;
+		state <= 8'd0;
 	end
 end
 
