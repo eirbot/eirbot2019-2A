@@ -40,6 +40,10 @@
 #define BREAK_R PB_5
 #define DIR_FWD_R 1
 
+// Pump
+#define PUMP_PIN PC_9
+#define ELECTROVALVE_PIN PB_9
+
 // PID
 #define NB_COEF_ERR 4
 #define NB_COEF_CO 3

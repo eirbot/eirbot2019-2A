@@ -2,6 +2,7 @@
 #include <mbed.h>
 #include <rgb.hpp>
 #include <servo.hpp>
+#include <pump.hpp>
 #include <qei.hpp>
 #include <pid.hpp>
 #include <lmd18200.hpp>
@@ -50,8 +51,7 @@ int main()
 	strat.reset();
 	rgb.setColor(1, 1, 1);
 	led = 1;
-	ser.baud(9600);
-	seg.printf("000");
+	seg.baud(9600);
 	servoTimerInit();
 	wait(3.0f);
 #ifdef DEBUG
