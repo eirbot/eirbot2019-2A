@@ -13,7 +13,7 @@ Strat::Strat(Navigator* const _nav, Odometry* const _odometry,
 	rgb(_rgb)
 {
 	reset();
-	ticker.attach(callback(this, &Strat::printSeg), 0.1);
+	ticker.attach(callback(this, &Strat::printSeg), 0.5);
 }
 
 Strat::~Strat()
@@ -37,6 +37,7 @@ void Strat::printSeg()
 void Strat::init(DigitalIn* const side_switch, DigitalIn* const waiting_key)
 {
 	rgb->setColor(1, 0, 0);
+	points = 127;
 	unsigned int debounce_counter = 0;
 	while(debounce_counter < DEBOUNCE_MAX) {
 		debounce_counter += !waiting_key->read();
@@ -248,53 +249,54 @@ int wp_26a_action(Waypoint** wp, Navigator* nav, Timer* t,
 }
 
 // Go next to the accelerator
-Waypoint wp_30a(0.290f, -0.258f, 0.35f*PI, &wp_31a, wp_30a_action);
+Waypoint wp_30a(0.288f, -0.105f, 0.00f*PI, &wp_31a, wp_30a_action);
 int wp_30a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
-	static char state = 0;
-	if (nav->ready() && state == 0) {
-		servoSetPwmDuty(SERVO_DEPLOYED);
-		*t_wp = t->read();
-		state = 1;
-	} else if (nav->ready() && state == 1 && (t->read() - *t_wp) > 1.0f) {
+	servoSetPwmDuty(SERVO_INIT);
+	if (nav->ready()) {
 		*t_wp = t->read();
 		*wp = (*wp)->next;
-		state = 0;
 	}
 	return 0;
 }
 
 // Push atom downto accelerator
-Waypoint wp_31a(NAN, NAN, 0.50f*PI, &wp_32a, wp_31a_action);
+Waypoint wp_31a(0.140f, -0.105f, NAN*PI, &wp_32a, wp_31a_action);
 int wp_31a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
-	if (nav->ready()) {
+	static unsigned int state = 0;
+	if (state == 0 && (t->read() - *t_wp) > 1.5f) {
+		*t_wp = t->read();
+		servoSetPwmDuty(SERVO_LEFT);
+		state = 1;
+	} else if (state == 1 && (t->read() - *t_wp) > 0.7f) {
+		*t_wp = t->read();
+		servoSetPwmDuty(SERVO_RIGHT);
+		state = 2;
+	} else if (state == 2 && (t->read() - *t_wp) > 0.7f) {
 		*t_wp = t->read();
 		*wp = (*wp)->next;
+		servoSetPwmDuty(SERVO_INIT);
+		state = 0;
 		return 20;
 	}
 	return 0;
 }
 
-// Retract arm
-Waypoint wp_32a(NAN, NAN, 0.35*PI, &wp_33a, wp_32a_action);
+// Go away from the wall
+Waypoint wp_32a(0.250, -0.105f, NAN*PI, &wp_33a, wp_32a_action);
 int wp_32a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
-	static char state = 0;
-	if (nav->ready() && state == 0) {
-		servoSetPwmDuty(SERVO_INIT);
-		*t_wp = t->read();
-		state = 1;
-	} else if (nav->ready() && state == 1 && (t->read() - *t_wp) > 1.0f) {
+	servoSetPwmDuty(SERVO_INIT);
+	if (nav->ready()) {
 		*t_wp = t->read();
 		*wp = (*wp)->next;
-		state = 0;
 	}
 	return 0;
 }
 
 // Go in front of goldonium
-Waypoint wp_33a(0.445f, -0.735f, -1.00f*PI, &wp_34a, wp_33a_action);
+Waypoint wp_33a(0.250f, -0.640f, -1.00f*PI, &wp_34a, wp_33a_action);
 int wp_33a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
 	if (nav->ready()) {
@@ -305,10 +307,11 @@ int wp_33a_action(Waypoint** wp, Navigator* nav, Timer* t,
 }
 
 // Grab goldonium
-Waypoint wp_34a(0.325f, -0.735f, -1.00f*PI, &wp_35a, wp_34a_action);
+Waypoint wp_34a(0.140f, -0.640f, NAN*PI, &wp_35a, wp_34a_action);
 int wp_34a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
-	if (nav->ready()) {
+	activatePump();
+	if (nav->ready() || (t->read() - *t_wp) > 3.0f) {
 		*t_wp = t->read();
 		*wp = (*wp)->next;
 		return 20;
@@ -343,6 +346,7 @@ Waypoint wp_41a(1.436f, 0.200f, NAN, &wp_00z, wp_41a_action);
 int wp_41a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
 	if (nav->ready()) {
+		releasePump();
 		*t_wp = t->read();
 		*wp = (*wp)->next;
 		return 24;

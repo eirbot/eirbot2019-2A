@@ -3,9 +3,10 @@
 
 #include "mbed.h"
 #include <rgb.hpp>
+#include <servo.hpp>
+#include <pump.hpp>
 #include <navigator.hpp>
 #include <waypoint.hpp>
-#include <servo.hpp>
 
 #define VIOLET 0
 #define YELLOW 1
