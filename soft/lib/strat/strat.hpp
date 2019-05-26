@@ -76,15 +76,22 @@ extern Waypoint wp_32a;
 extern int wp_32a_action(Waypoint** wp, Navigator* nav, Timer* t, float* t_wp);
 extern Waypoint wp_33a;
 extern int wp_33a_action(Waypoint** wp, Navigator* nav, Timer* t, float* t_wp);
-extern Waypoint wp_34a;
-extern int wp_34a_action(Waypoint** wp, Navigator* nav, Timer* t, float* t_wp);
-extern Waypoint wp_35a;
-extern int wp_35a_action(Waypoint** wp, Navigator* nav, Timer* t, float* t_wp);
 
 extern Waypoint wp_40a;
 extern int wp_40a_action(Waypoint** wp, Navigator* nav, Timer* t, float* t_wp);
 extern Waypoint wp_41a;
 extern int wp_41a_action(Waypoint** wp, Navigator* nav, Timer* t, float* t_wp);
+extern Waypoint wp_42a;
+extern int wp_42a_action(Waypoint** wp, Navigator* nav, Timer* t, float* t_wp);
+extern Waypoint wp_43a;
+extern int wp_43a_action(Waypoint** wp, Navigator* nav, Timer* t, float* t_wp);
+
+extern Waypoint wp_50a;
+extern int wp_50a_action(Waypoint** wp, Navigator* nav, Timer* t, float* t_wp);
+extern Waypoint wp_51a;
+extern int wp_51a_action(Waypoint** wp, Navigator* nav, Timer* t, float* t_wp);
+extern Waypoint wp_52a;
+extern int wp_52a_action(Waypoint** wp, Navigator* nav, Timer* t, float* t_wp);
 
 #endif
 

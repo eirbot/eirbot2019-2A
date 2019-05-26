@@ -53,7 +53,7 @@ void Navigator::refresh()
 	odometry->getPos(&x_pos, &y_pos, &a_pos);
 	float dx = x - x_pos;
 	float dy = y - y_pos;
-	float r = sqrtf(pow(dx, 2) + pow(dy, 2));
+	float r = isNan(dx) || isNan(dy) ? 0.0f : sqrtf(pow(dx, 2) + pow(dy, 2));
 	ready_val = false;
 	float t = isNan(a) ? 0.0f : a - a_pos;
 	if (abs(r) > THRESH_DIST) {

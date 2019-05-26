@@ -31,13 +31,13 @@ void Strat::reset()
 
 void Strat::printSeg()
 {
-	seg->printf("%3.3d", points);
+	seg->printf("$%3.3d", points);
 }
 
 void Strat::init(DigitalIn* const side_switch, DigitalIn* const waiting_key)
 {
 	rgb->setColor(1, 0, 0);
-	points = 127;
+	points = 789;
 	unsigned int debounce_counter = 0;
 	while(debounce_counter < DEBOUNCE_MAX) {
 		debounce_counter += !waiting_key->read();
@@ -252,7 +252,6 @@ int wp_26a_action(Waypoint** wp, Navigator* nav, Timer* t,
 Waypoint wp_30a(0.288f, -0.105f, 0.00f*PI, &wp_31a, wp_30a_action);
 int wp_30a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
-	servoSetPwmDuty(SERVO_INIT);
 	if (nav->ready()) {
 		*t_wp = t->read();
 		*wp = (*wp)->next;
@@ -260,12 +259,23 @@ int wp_30a_action(Waypoint** wp, Navigator* nav, Timer* t,
 	return 0;
 }
 
-// Push atom downto accelerator
+// Go against the accelerator
 Waypoint wp_31a(0.140f, -0.105f, NAN*PI, &wp_32a, wp_31a_action);
 int wp_31a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
+	if ((t->read() - *t_wp) > 1.5f) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+	}
+	return 0;
+}
+
+// Push atom downto accelerator
+Waypoint wp_32a(NAN, NAN, NAN*PI, &wp_33a, wp_32a_action);
+int wp_32a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
 	static unsigned int state = 0;
-	if (state == 0 && (t->read() - *t_wp) > 1.5f) {
+	if (state == 0) {
 		*t_wp = t->read();
 		servoSetPwmDuty(SERVO_LEFT);
 		state = 1;
@@ -284,8 +294,8 @@ int wp_31a_action(Waypoint** wp, Navigator* nav, Timer* t,
 }
 
 // Go away from the wall
-Waypoint wp_32a(0.250, -0.105f, NAN*PI, &wp_33a, wp_32a_action);
-int wp_32a_action(Waypoint** wp, Navigator* nav, Timer* t,
+Waypoint wp_33a(0.300, -0.105f, 0.5f*PI, &wp_40a, wp_33a_action);
+int wp_33a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
 	servoSetPwmDuty(SERVO_INIT);
 	if (nav->ready()) {
@@ -296,42 +306,7 @@ int wp_32a_action(Waypoint** wp, Navigator* nav, Timer* t,
 }
 
 // Go in front of goldonium
-Waypoint wp_33a(0.250f, -0.640f, -1.00f*PI, &wp_34a, wp_33a_action);
-int wp_33a_action(Waypoint** wp, Navigator* nav, Timer* t,
-		float* t_wp){
-	if (nav->ready()) {
-		*t_wp = t->read();
-		*wp = (*wp)->next;
-	}
-	return 0;
-}
-
-// Grab goldonium
-Waypoint wp_34a(0.140f, -0.640f, NAN*PI, &wp_35a, wp_34a_action);
-int wp_34a_action(Waypoint** wp, Navigator* nav, Timer* t,
-		float* t_wp){
-	activatePump();
-	if (nav->ready() || (t->read() - *t_wp) > 3.0f) {
-		*t_wp = t->read();
-		*wp = (*wp)->next;
-		return 20;
-	}
-	return 0;
-}
-
-// Go back
-Waypoint wp_35a(0.445f, -0.735f, -1.00f*PI, &wp_40a, wp_35a_action);
-int wp_35a_action(Waypoint** wp, Navigator* nav, Timer* t,
-		float* t_wp){
-	if (nav->ready()) {
-		*t_wp = t->read();
-		*wp = (*wp)->next;
-	}
-	return 0;
-}
-
-// Go to the scale
-Waypoint wp_40a(1.350f, 0.290f, -0.16f*PI, &wp_41a, wp_40a_action);
+Waypoint wp_40a(0.300f, -0.630f, 1.00f*PI, &wp_41a, wp_40a_action);
 int wp_40a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
 	if (nav->ready()) {
@@ -341,9 +316,66 @@ int wp_40a_action(Waypoint** wp, Navigator* nav, Timer* t,
 	return 0;
 }
 
-// Put goldonium into the scale
-Waypoint wp_41a(1.436f, 0.200f, NAN, &wp_00z, wp_41a_action);
+// Go against goldonium
+Waypoint wp_41a(0.140f, -0.625f, NAN*PI, &wp_42a, wp_41a_action);
 int wp_41a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	activatePump();
+	if ((t->read() - *t_wp) > 0.5f) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+	}
+	return 0;
+}
+
+// Grab goldonium
+Waypoint wp_42a(NAN, NAN, NAN*PI, &wp_43a, wp_42a_action);
+int wp_42a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if ((t->read() - *t_wp) > 0.5f) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+		return 20;
+	}
+	return 0;
+}
+
+// Go back
+Waypoint wp_43a(0.350f, -0.630f, NAN*PI, &wp_50a, wp_43a_action);
+int wp_43a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+	}
+	return 0;
+}
+
+// Go to the scale
+Waypoint wp_50a(1.350f, 0.290f, -0.16f*PI, &wp_51a, wp_50a_action);
+int wp_50a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+	}
+	return 0;
+}
+
+// Position in front of the scale
+Waypoint wp_51a(1.455f, 0.206f, -0.05f*PI, &wp_52a, wp_51a_action);
+int wp_51a_action(Waypoint** wp, Navigator* nav, Timer* t,
+		float* t_wp){
+	if (nav->ready()) {
+		*t_wp = t->read();
+		*wp = (*wp)->next;
+	}
+	return 0;
+}
+
+// Put goldonium into the scale
+Waypoint wp_52a(NAN, NAN, NAN, &wp_00z, wp_52a_action);
+int wp_52a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
 	if (nav->ready()) {
 		releasePump();

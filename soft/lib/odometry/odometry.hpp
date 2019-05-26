@@ -9,7 +9,7 @@
 const float ticks_per_meter = 43723.0f;
 const float eps = 0.318f*ticks_per_meter;
 
-#define PERIOD_ODOMETRY 0.001f
+#define PERIOD_ODOMETRY 0.0002f
 
 #define PI 3.14159f
 #define TWOPI 6.28319f
