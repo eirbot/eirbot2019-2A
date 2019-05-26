@@ -53,6 +53,7 @@ int main()
 	led = 1;
 	seg.baud(9600);
 	servoTimerInit();
+	initPump(PUMP_PIN, EVALVE_PIN);
 	wait(3.0f);
 #ifdef DEBUG
 	ser.baud(115200);

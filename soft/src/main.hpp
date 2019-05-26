@@ -42,7 +42,7 @@
 
 // Pump
 #define PUMP_PIN PC_9
-#define ELECTROVALVE_PIN PB_9
+#define EVALVE_PIN PB_9
 
 // PID
 #define NB_COEF_ERR 4
