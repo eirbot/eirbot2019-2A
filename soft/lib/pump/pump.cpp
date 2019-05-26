@@ -1,5 +1,8 @@
 #include <pump.hpp>
 
+DigitalOut* pump;
+DigitalOut* evalve;
+
 void initPump(PinName _pump, PinName _evalve)
 {
 	pump = new DigitalOut(_pump);
