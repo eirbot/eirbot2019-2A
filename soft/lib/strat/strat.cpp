@@ -263,7 +263,7 @@ int wp_30a_action(Waypoint** wp, Navigator* nav, Timer* t,
 Waypoint wp_31a(0.140f, -0.105f, NAN*PI, &wp_32a, wp_31a_action);
 int wp_31a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
-	if ((t->read() - *t_wp) > 1.5f) {
+	if ((t->read() - *t_wp) > 1.2f) {
 		*t_wp = t->read();
 		*wp = (*wp)->next;
 	}
@@ -294,7 +294,7 @@ int wp_32a_action(Waypoint** wp, Navigator* nav, Timer* t,
 }
 
 // Go away from the wall
-Waypoint wp_33a(0.300, -0.105f, 0.5f*PI, &wp_40a, wp_33a_action);
+Waypoint wp_33a(0.330, -0.105f, 0.5f*PI, &wp_40a, wp_33a_action);
 int wp_33a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
 	servoSetPwmDuty(SERVO_INIT);
@@ -306,7 +306,7 @@ int wp_33a_action(Waypoint** wp, Navigator* nav, Timer* t,
 }
 
 // Go in front of goldonium
-Waypoint wp_40a(0.300f, -0.630f, 1.00f*PI, &wp_41a, wp_40a_action);
+Waypoint wp_40a(0.330f, -0.630f, 1.00f*PI, &wp_41a, wp_40a_action);
 int wp_40a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
 	if (nav->ready()) {
@@ -321,7 +321,7 @@ Waypoint wp_41a(0.140f, -0.625f, NAN*PI, &wp_42a, wp_41a_action);
 int wp_41a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
 	activatePump();
-	if ((t->read() - *t_wp) > 0.5f) {
+	if ((t->read() - *t_wp) > 0.7f) {
 		*t_wp = t->read();
 		*wp = (*wp)->next;
 	}
@@ -352,7 +352,7 @@ int wp_43a_action(Waypoint** wp, Navigator* nav, Timer* t,
 }
 
 // Go to the scale
-Waypoint wp_50a(1.350f, 0.290f, -0.16f*PI, &wp_51a, wp_50a_action);
+Waypoint wp_50a(1.200f, 0.191f, 0.00f*PI, &wp_51a, wp_50a_action);
 int wp_50a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
 	if (nav->ready()) {
@@ -363,19 +363,8 @@ int wp_50a_action(Waypoint** wp, Navigator* nav, Timer* t,
 }
 
 // Position in front of the scale
-Waypoint wp_51a(1.455f, 0.206f, -0.05f*PI, &wp_52a, wp_51a_action);
+Waypoint wp_51a(1.426f, 0.189f, 0.00f*PI, &wp_00z, wp_51a_action);
 int wp_51a_action(Waypoint** wp, Navigator* nav, Timer* t,
-		float* t_wp){
-	if (nav->ready()) {
-		*t_wp = t->read();
-		*wp = (*wp)->next;
-	}
-	return 0;
-}
-
-// Put goldonium into the scale
-Waypoint wp_52a(NAN, NAN, NAN, &wp_00z, wp_52a_action);
-int wp_52a_action(Waypoint** wp, Navigator* nav, Timer* t,
 		float* t_wp){
 	if (nav->ready()) {
 		releasePump();
