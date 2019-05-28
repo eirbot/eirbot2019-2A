@@ -3,6 +3,7 @@
 
 #include "mbed.h"
 #include <rgb.hpp>
+#include <gp2.hpp>
 #include <servo.hpp>
 #include <pump.hpp>
 #include <navigator.hpp>

@@ -23,6 +23,7 @@ void Navigator::reset()
 	ticker.detach();
 	odometry->reset();
 	speed_block->reset();
+	obstacle = 0;
 }
 
 void Navigator::start()
@@ -30,6 +31,7 @@ void Navigator::start()
 	odometry->start();
 	speed_block->start();
 	ticker.attach(callback(this, &Navigator::refresh), PERIOD_POS);
+	obstacle = 0;
 }
 
 void Navigator::setDst(float const _x, float const _y, float const _a)
@@ -72,6 +74,7 @@ void Navigator::refresh()
 		r = 0.0f;
 	}
 	r = sg(r)*min(A_DIST*abs(r), CEIL_DIST);
+	r = obstacle ? 0.0f : r;
 	t = sg(t)*min(A_ANGLE*abs(t), CEIL_ANGLE);
 	speed_block->setSpeed(r-t, r+t);
 }

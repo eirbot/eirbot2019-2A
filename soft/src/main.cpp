@@ -1,6 +1,7 @@
 #include "main.hpp"
 #include <mbed.h>
 #include <rgb.hpp>
+#include <gp2.hpp>
 #include <servo.hpp>
 #include <pump.hpp>
 #include <qei.hpp>
@@ -54,6 +55,7 @@ int main()
 	seg.baud(9600);
 	servoTimerInit();
 	initPump(PUMP_PIN, EVALVE_PIN);
+	initGp2(GP2_FL, GP2_FC, GP2_FR, GP2_RL, GP2_RC, GP2_RR);
 	wait(3.0f);
 #ifdef DEBUG
 	ser.baud(115200);

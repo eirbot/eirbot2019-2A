@@ -48,5 +48,13 @@
 #define NB_COEF_ERR 4
 #define NB_COEF_CO 3
 
+// GP2
+#define GP2_FL PA_1
+#define GP2_FC PA_4
+#define GP2_FR PB_0
+#define GP2_RL PC_1
+#define GP2_RC PC_0
+#define GP2_RR PC_2
+
 
 #endif
