@@ -11,6 +11,7 @@
 #include <odometry.hpp>
 #include <navigator.hpp>
 #include <strat.hpp>
+#include <bluetooth_controller.hpp>
 
 #ifdef DEBUG
 #include <debug.hpp>
@@ -32,6 +33,9 @@ float coef_co_r[] = {1.0f, -0.9107f, -0.1491f, 0.05982f};
 
 DigitalOut led(LED2);
 DigitalIn side(SIDE_PIN);
+DigitalOut ev(PB_9);
+DigitalOut po(PC_9);
+DigitalOut poki(PC_3, PullUp);
 DigitalIn waiting_key(KEY_PIN, PullUp);
 RGB rgb(LED_R_PIN, LED_G_PIN, LED_B_PIN);
 Serial seg(SEG_TX, SEG_RX);
@@ -75,6 +79,9 @@ int main()
 #endif
 #ifdef SPEED
 	speed_test(&ser, &speed_block);
+#endif
+#ifdef BTPS3
+	bluetooth_controller_PS3(&rgb, &speed_block, &ev, &po, &poki);
 #endif
 #ifdef SQUARE
 	square(&ser, &speed_block);
