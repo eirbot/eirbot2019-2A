@@ -392,8 +392,8 @@ void test_real(Serial* const ser, Strat* const strat, Odometry* const odometry,
 	ser->printf("run: side=%d\n\r", side->read());
 	while(strat->run() && !ser->readable()) {
 		odometry->getPos(&x, &y, &a);
-		ser->printf("%8f\t%8f\t%f\r", x/TICKS_PM,
-				y/TICKS_PM, a/TICKS_PRAD/PI);
+		ser->printf("%8f\t%8f\t%f\t", x/TICKS_PM, y/TICKS_PM, a/TICKS_PRAD/PI);
+		ser->printf("%8.8x\r", gp2Obstacle());
 	}
 	ser->printf("\n\rend...\n\r");
 }

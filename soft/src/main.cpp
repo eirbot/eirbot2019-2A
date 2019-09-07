@@ -1,6 +1,7 @@
 #include "main.hpp"
 #include <mbed.h>
 #include <rgb.hpp>
+#include <gp2.hpp>
 #include <servo.hpp>
 #include <pump.hpp>
 #include <qei.hpp>
@@ -10,6 +11,7 @@
 #include <odometry.hpp>
 #include <navigator.hpp>
 #include <strat.hpp>
+#include <bluetooth_controller.hpp>
 
 #ifdef DEBUG
 #include <debug.hpp>
@@ -31,6 +33,9 @@ float coef_co_r[] = {1.0f, -0.9107f, -0.1491f, 0.05982f};
 
 DigitalOut led(LED2);
 DigitalIn side(SIDE_PIN);
+DigitalOut ev(PB_9);
+DigitalOut po(PC_9);
+DigitalOut poki(PC_3, PullUp);
 DigitalIn waiting_key(KEY_PIN, PullUp);
 RGB rgb(LED_R_PIN, LED_G_PIN, LED_B_PIN);
 Serial seg(SEG_TX, SEG_RX);
@@ -54,6 +59,7 @@ int main()
 	seg.baud(9600);
 	servoTimerInit();
 	initPump(PUMP_PIN, EVALVE_PIN);
+	initGp2(GP2_FL, GP2_FC, GP2_FR, GP2_RL, GP2_RC, GP2_RR);
 	wait(3.0f);
 #ifdef DEBUG
 	ser.baud(115200);
@@ -73,6 +79,9 @@ int main()
 #endif
 #ifdef SPEED
 	speed_test(&ser, &speed_block);
+#endif
+#ifdef BTPS3
+	bluetooth_controller_PS3(&rgb, &speed_block, &ev, &po, &poki);
 #endif
 #ifdef SQUARE
 	square(&ser, &speed_block);

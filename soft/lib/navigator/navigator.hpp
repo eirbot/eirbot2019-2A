@@ -28,6 +28,7 @@ public:
 	void start();
 	void setDst(float const _x, float const _y, float const _a);
 	bool ready();
+	bool obstacle;
 private:
 	void refresh();
 	float x;
